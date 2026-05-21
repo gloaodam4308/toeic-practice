@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TOEIC Daily">
+<meta name="theme-color" content="#1a56db">
+<title>TOEIC 每日練習</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-dark: #1e429f;
+    --success: #0e9f6e;
+    --danger: #f05252;
+    --warning: #ff8c00;
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  nav { background: var(--primary); color: white; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+  nav .logo { font-size: 1.2rem; font-weight: 700; letter-spacing: .5px; }
+  nav .nav-tabs { display: flex; gap: 4px; }
+  nav .tab-btn { background: transparent; border: none; color: rgba(255,255,255,.75); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: .9rem; transition: all .15s; }
+  nav .tab-btn.active, nav .tab-btn:hover { background: rgba(255,255,255,.15); color: white; }
+  nav .streak { font-size: .85rem; background: rgba(255,255,255,.15); padding: 4px 12px; border-radius: 20px; }
+
+  .bottom-nav { display: none; }
+
+  .page { display: none; max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+  .page.active { display: block; }
+
+  .card { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-box { background: var(--card); border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
+  .stat-box .num { font-size: 2rem; font-weight: 700; color: var(--primary); }
+  .stat-box .label { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+  .start-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background .15s; }
+  .start-btn:hover { background: var(--primary-dark); }
+  .start-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+  .completed-badge { display: inline-block; background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: .85rem; font-weight: 600; }
+
+  .exam-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .progress-bar { flex: 1; height: 8px; background: #e5e7eb; border-radius: 4px; margin: 0 16px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--primary); border-radius: 4px; transition: width .3s; }
+  .timer { font-size: 1.1rem; font-weight: 700; color: var(--warning); min-width: 60px; text-align: right; }
+  .timer.danger { color: var(--danger); animation: pulse .5s infinite alternate; }
+  @keyframes pulse { from { opacity: 1; } to { opacity: .4; } }
+  .q-counter { font-size: .9rem; color: var(--muted); min-width: 70px; }
+
+  .part-label { display: inline-block; background: #eff6ff; color: var(--primary); font-size: .75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+  .question-text { font-size: 1.05rem; line-height: 1.7; margin-bottom: 18px; }
+  .passage { background: #f9fafb; border-left: 4px solid var(--primary); padding: 14px 16px; border-radius: 4px; margin-bottom: 18px; font-size: .95rem; line-height: 1.8; white-space: pre-line; }
+  .blank { display: inline-block; border-bottom: 2px solid var(--primary); min-width: 80px; color: var(--primary); font-weight: 600; text-align: center; padding: 0 4px; }
+
+  .options { display: grid; gap: 10px; }
+  .option-btn { width: 100%; text-align: left; padding: 13px 16px; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-size: .97rem; transition: all .15s; display: flex; align-items: center; gap: 10px; }
+  .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #eff6ff; }
+  .option-btn.selected { border-color: var(--primary); background: #eff6ff; }
+  .option-btn.correct { border-color: var(--success); background: #ecfdf5; color: #065f46; }
+  .option-btn.wrong { border-color: var(--danger); background: #fef2f2; color: #991b1b; }
+  .option-btn .letter { width: 26px; height: 26px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .8rem; flex-shrink: 0; }
+  .option-btn.selected .letter { background: var(--primary); color: white; }
+  .option-btn.correct .letter { background: var(--success); color: white; }
+  .option-btn.wrong .letter { background: var(--danger); color: white; }
+
+  .explanation { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; margin-top: 14px; font-size: .9rem; line-height: 1.6; display: none; }
+  .explanation.show { display: block; }
+  .explanation strong { color: #92400e; }
+
+  .nav-btns { display: flex; gap: 10px; margin-top: 20px; }
+  .btn { padding: 10px 24px; border-radius: 8px; font-size: .95rem; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
+  .btn-outline:hover { background: #eff6ff; }
+  .btn-success { background: var(--success); color: white; }
+
+  .score-circle { width: 140px; height: 140px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; font-weight: 700; }
+  .score-circle .pct { font-size: 2.2rem; }
+  .score-circle .sub { font-size: .85rem; opacity: .8; }
+  .result-breakdown { display: grid; gap: 8px; margin-bottom: 20px; }
+  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; background: #f9fafb; }
+  .result-row .q-num { font-weight: 600; font-size: .9rem; color: var(--muted); }
+  .result-row .q-text { flex: 1; margin: 0 12px; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .badge { padding: 3px 10px; border-radius: 20px; font-size: .8rem; font-weight: 600; }
+  .badge.ok { background: #d1fae5; color: #065f46; }
+  .badge.fail { background: #fee2e2; color: #991b1b; }
+  .badge.skip { background: #f3f4f6; color: var(--muted); }
+
+  .history-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 8px; background: #f9fafb; margin-bottom: 8px; cursor: pointer; transition: background .15s; }
+  .history-item:hover { background: #eff6ff; }
+  .history-date { font-size: .85rem; color: var(--muted); }
+  .history-score { font-weight: 700; }
+  .history-bar { height: 6px; flex: 1; background: #e5e7eb; border-radius: 3px; margin: 0 16px; overflow: hidden; }
+  .history-fill { height: 100%; border-radius: 3px; }
+  .empty-state { text-align: center; color: var(--muted); padding: 48px 0; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 14px; padding: 28px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
+  .modal h3 { font-size: 1.2rem; margin-bottom: 16px; }
+
+  .shortcut-hint { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,.75); color: white; padding: 8px 14px; border-radius: 8px; font-size: .8rem; pointer-events: none; opacity: 0; transition: opacity .3s; }
+  .shortcut-hint.show { opacity: 1; }
+
+  .a2hs-banner { display: none; }
+
+  @media (max-width: 600px) {
+    nav .nav-tabs { display: none; }
+    nav .logo { font-size: 1rem; }
+    nav { height: 50px; padding: 0 16px; }
+
+    .bottom-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
+      box-shadow: 0 -2px 10px rgba(0,0,0,.08);
+    }
+    .bottom-nav button {
+      flex: 1; border: none; background: transparent;
+      padding: 10px 0 8px; font-size: .7rem; color: var(--muted);
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      cursor: pointer; transition: color .15s;
+    }
+    .bottom-nav button.active { color: var(--primary); }
+    .bottom-nav button svg { width: 22px; height: 22px; }
+
+    .page { padding: 12px 12px 80px; }
+    .card { padding: 14px; border-radius: 10px; }
+
+    .option-btn { padding: 16px 14px; font-size: 1rem; min-height: 54px; }
+    .option-btn .letter { width: 32px; height: 32px; font-size: .85rem; }
+
+    .nav-btns { flex-direction: column-reverse; }
+    .nav-btns .btn { width: 100%; padding: 15px; font-size: 1rem; text-align: center; }
+
+    .start-btn { padding: 18px; font-size: 1.15rem; border-radius: 12px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stat-box .num { font-size: 1.7rem; }
+    .question-text { font-size: 1rem; }
+    .passage { font-size: .9rem; }
+
+    .modal { border-radius: 14px 14px 0 0; max-height: 90vh; width: 100%; margin-top: auto; }
+    .modal-overlay { align-items: flex-end; }
+
+    .exam-header { margin-bottom: 12px; }
+    .q-counter { font-size: .8rem; min-width: 55px; }
+    .timer { font-size: 1rem; min-width: 52px; }
+    .shortcut-hint { display: none; }
+
+    .a2hs-banner {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+      font-size: .88rem;
+    }
+    .a2hs-banner strong { display: block; margin-bottom: 2px; color: var(--primary); }
+    .a2hs-banner small { color: var(--muted); }
+    .a2hs-close { background: none; border: none; font-size: 1.2rem; color: var(--muted); cursor: pointer; padding: 4px; }
+  }
+
+  @media (min-width: 601px) {
+    .a2hs-banner { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">📝 TOEIC Daily</div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showPage('dashboard')">首頁</button>
+    <button class="tab-btn" onclick="showPage('exam')" id="exam-tab">練習</button>
+    <button class="tab-btn" onclick="showPage('history')">歷史</button>
+  </div>
+  <div class="streak" id="streak-display">🔥 0 天</div>
+</nav>
+
+<nav class="bottom-nav">
+  <button onclick="showPage('dashboard')" id="bnav-dashboard" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    首頁
+  </button>
+  <button onclick="showPage('exam')" id="bnav-exam">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+    練習
+  </button>
+  <button onclick="showPage('history')" id="bnav-history">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    歷史
+  </button>
+</nav>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="a2hs-banner" id="a2hs-banner" style="display:none">
+    <div>
+      <strong>加入主畫面</strong>
+      <small>像 App 一樣快速開啟練習</small>
+    </div>
+    <button class="a2hs-close" onclick="dismissA2HS()">✕</button>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box"><div class="num" id="stat-total">0</div><div class="label">累計題數</div></div>
+    <div class="stat-box"><div class="num" id="stat-accuracy">0%</div><div class="label">正確率</div></div>
+    <div class="stat-box"><div class="num" id="stat-days">0</div><div class="label">練習天數</div></div>
+    <div class="stat-box"><div class="num" id="stat-streak">0</div><div class="label">連續天數</div></div>
+  </div>
+  <div class="card">
+    <h2 style="margin-bottom:8px">今日練習</h2>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">20 題多益精選考題 · 預計 15 分鐘 · 含解析</p>
+    <div id="today-status"></div>
+    <button class="start-btn" id="start-btn" onclick="startExam()">▶ 開始今日練習</button>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:10px;text-align:center" id="shortcut-tip">快捷鍵：A/B/C/D 選答 · Enter 確認 · → 下一題</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:12px">題型分佈</h3>
+    <div style="display:grid;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span>Part 5 — 句子填空（文法／詞彙）</span><span style="color:var(--primary);font-weight:600">10 題</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span>Part 6 — 段落填空</span><span style="color:var(--primary);font-weight:600">4 題</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+        <span>Part 7 — 閱讀理解</span><span style="color:var(--primary);font-weight:600">6 題</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div class="page" id="page-exam">
+  <div class="card" style="padding:16px">
+    <div class="exam-header">
+      <div class="q-counter" id="q-counter">1 / 20</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:5%"></div></div>
+      <div class="timer" id="timer">25:00</div>
+    </div>
+  </div>
+  <div class="card" id="question-card">
+    <span class="part-label" id="part-label">Part 5</span>
+    <div class="question-text" id="question-text"></div>
+    <div id="passage-area"></div>
+    <div class="options" id="options-area"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-outline" id="prev-btn" onclick="prevQ()">← 上一題</button>
+    <button class="btn btn-primary" id="next-btn" onclick="nextQ()">確認並繼續 →</button>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="card">
+    <h2 style="margin-bottom:16px">練習歷史紀錄</h2>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal-overlay" id="result-modal">
+  <div class="modal">
+    <h3 style="text-align:center">練習完成！</h3>
+    <div id="modal-score-circle" style="margin-bottom:16px"></div>
+    <div id="modal-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;text-align:center"></div>
+    <h4 style="margin-bottom:10px">詳細結果</h4>
+    <div id="modal-breakdown" class="result-breakdown"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" style="flex:1" onclick="reviewExam()">檢視解析</button>
+      <button class="btn btn-success" style="flex:1" onclick="closeModal()">儲存並完成</button>
+    </div>
+  </div>
+</div>
+
+<div class="shortcut-hint" id="shortcut-hint">A/B/C/D 選答</div>
+
+<script>
+const QUESTION_BANK = [
+  { id:1, part:5, text:"The company's new marketing strategy has been ------- effective in attracting younger customers.", options:["remarkable","remarkably","remarked","remark"], answer:1, explanation:"副詞 remarkably 修飾形容詞 effective，是正確用法。remarkable 是形容詞，remarked 是動詞過去式，remark 是名詞/動詞。" },
+  { id:2, part:5, text:"All employees are required to ------- their expense reports by the end of the fiscal quarter.", options:["submit","submission","submitted","submitting"], answer:0, explanation:"be required to 後接原形動詞 submit。submission 是名詞，submitted 和 submitting 詞性不符。" },
+  { id:3, part:5, text:"The merger between the two firms was ------- approved by the board of directors last Tuesday.", options:["unanimous","unanimously","unanimity","unanimousness"], answer:1, explanation:"副詞 unanimously 修飾動詞 approved。unanimous 是形容詞，unanimity/unanimousness 是名詞。" },
+  { id:4, part:5, text:"Ms. Chen will be ------- for overseeing the entire construction project during Mr. Park's absence.", options:["responsible","responsibility","responsibly","respond"], answer:0, explanation:"be responsible for 是固定搭配，意為「負責……」。" },
+  { id:5, part:5, text:"The quarterly report showed ------- improvement in the company's financial performance.", options:["consider","considering","considerable","considerably"], answer:2, explanation:"形容詞 considerable 修飾名詞 improvement（相當大的改善）。considerably 是副詞不修飾名詞。" },
+  { id:6, part:5, text:"Applicants ------- have at least five years of experience in project management will be given priority.", options:["who","which","what","whose"], answer:0, explanation:"修飾人（applicants）的關係代名詞用 who，which 修飾物，what 不引導關係子句，whose 後接名詞。" },
+  { id:7, part:5, text:"The new regulations will take ------- on January 1st of next year.", options:["effect","affect","effective","effectively"], answer:0, explanation:"take effect 是固定片語，意為「生效」。affect 是動詞，不能接在 take 後當名詞用。" },
+  { id:8, part:5, text:"------- the high cost of production, the management decided to outsource some manufacturing processes.", options:["Despite","Although","Because of","In spite"], answer:2, explanation:"because of 後接名詞片語（high cost），表原因。Despite/In spite of 後也接名詞但表讓步，although 接子句。此處語意是「因為」高成本而決定外包。" },
+  { id:9, part:5, text:"The training session has been ------- from Monday to Wednesday due to scheduling conflicts.", options:["postponed","proposed","promoted","proceeded"], answer:0, explanation:"postpone 意為「延期」，符合語境（從週一推遲到週三）。propose 提議，promote 晉升/促銷，proceed 繼續。" },
+  { id:10, part:5, text:"Please ensure that all personal belongings are stored ------- during the flight.", options:["secure","securely","security","secured"], answer:1, explanation:"副詞 securely 修飾動詞 stored（安全地存放）。secure 是形容詞/動詞，security 是名詞。" },
+  { id:11, part:6, passage:"Dear Mr. Wilson,\n\nThank you for your interest in the Senior Account Manager position at Greenfield Solutions. We have carefully reviewed your application and are pleased to inform you that you have been selected for an interview.\n\nThe interview is scheduled for Friday, May 22nd, at 2:00 P.M. at our main office. Please bring two copies of your résumé and any _______ certifications or portfolios.", text:"Which word best completes the passage?", options:["relevant","relevance","relevantly","irrelevant"], answer:0, explanation:"relevant 形容詞修飾 certifications（相關的證書）。relevance 是名詞，relevantly 是副詞，irrelevant 語意相反。" },
+  { id:12, part:6, passage:"INTERNAL MEMO\nTo: All Staff\nFrom: Human Resources\n\nWe are pleased to announce that the company will be implementing a new flexible work policy starting next month. Employees will have the _______ to work from home up to three days per week, subject to manager approval.", text:"Which word best completes the memo?", options:["option","opinion","opposition","operation"], answer:0, explanation:"have the option to 是固定搭配，意為「有……的選擇權」。opinion 意見，opposition 反對，operation 操作。" },
+  { id:13, part:6, passage:"Northridge Hotel is proud to announce the opening of our newly renovated conference center. The state-of-the-art facility features 15 meeting rooms, each _______ with the latest audio-visual technology.", text:"Which word best completes the passage?", options:["equip","equipped","equipping","equipment"], answer:1, explanation:"過去分詞 equipped 用作後置形容詞，修飾 rooms（配備了……的會議室）。" },
+  { id:14, part:6, passage:"Attention Passengers:\n\nDue to _______ weather conditions, Flight TR-842 to Singapore has been delayed by approximately two hours. We sincerely apologize for any inconvenience this may cause. Passengers are advised to check the departure board for updated information.", text:"Which word best completes the announcement?", options:["adverse","diverse","reverse","universe"], answer:0, explanation:"adverse weather conditions（惡劣天氣）是常見搭配。diverse 多樣，reverse 相反，universe 宇宙。" },
+  { id:15, part:7, passage:"PRESS RELEASE — For Immediate Release\n\nTechVision Inc. announced today the launch of its latest productivity software, WorkFlow Pro 3.0. The new version includes enhanced collaboration tools, AI-powered scheduling, and a redesigned user interface. WorkFlow Pro 3.0 is available for download starting August 15th.\n\n\"We listened to our customers and redesigned the platform from the ground up,\" said CEO Amanda Foster. \"WorkFlow Pro 3.0 reduces meeting preparation time by 40% and improves team productivity.\"\n\nWorkFlow Pro 3.0 is priced at $29.99 per user per month, with a 30-day free trial available.", text:"According to the press release, what is a feature of WorkFlow Pro 3.0?", options:["A built-in video conferencing system","AI-powered scheduling","Free lifetime access for existing users","A mobile-only interface"], answer:1, explanation:"文中明確提到 AI-powered scheduling 是新功能之一。" },
+  { id:16, part:7, passage:"PRESS RELEASE — For Immediate Release\n\nTechVision Inc. announced today the launch of its latest productivity software, WorkFlow Pro 3.0. The new version includes enhanced collaboration tools, AI-powered scheduling, and a redesigned user interface. WorkFlow Pro 3.0 is available for download starting August 15th.\n\n\"We listened to our customers and redesigned the platform from the ground up,\" said CEO Amanda Foster. \"WorkFlow Pro 3.0 reduces meeting preparation time by 40% and improves team productivity.\"\n\nWorkFlow Pro 3.0 is priced at $29.99 per user per month, with a 30-day free trial available.", text:"What does the CEO say about WorkFlow Pro 3.0?", options:["It was developed without customer feedback.","It costs less than previous versions.","It reduces meeting preparation time by 40%.","It is only available for enterprise customers."], answer:2, explanation:"CEO Amanda Foster 說 reduces meeting preparation time by 40%，是文中的直接引述。" },
+  { id:17, part:7, passage:"Email\nFrom: Sarah Mitchell <s.mitchell@deltagroup.com>\nTo: Thomas Huang <t.huang@deltagroup.com>\nSubject: Q3 Budget Review Meeting\n\nHi Thomas,\n\nI hope this email finds you well. I wanted to confirm our Q3 budget review meeting scheduled for next Thursday at 3:00 P.M. in Conference Room B.\n\nCould you please prepare a summary of your department's expenditures for the past two quarters? Also, if possible, please include projected figures for Q4. This will help us make more informed decisions during the meeting.\n\nPlease let me know if you have any scheduling conflicts.\n\nBest regards,\nSarah Mitchell\nDirector of Finance", text:"What is Sarah Mitchell asking Thomas Huang to do?", options:["Reschedule the meeting to a different time","Prepare a summary of past and projected expenditures","Present the annual budget to the board","Cancel the Q3 budget review meeting"], answer:1, explanation:"Sarah 要求 Thomas prepare a summary of your department's expenditures for the past two quarters 並包括 projected figures for Q4。" },
+  { id:18, part:7, passage:"Email\nFrom: Sarah Mitchell <s.mitchell@deltagroup.com>\nTo: Thomas Huang <t.huang@deltagroup.com>\nSubject: Q3 Budget Review Meeting\n\nHi Thomas,\n\nI hope this email finds you well. I wanted to confirm our Q3 budget review meeting scheduled for next Thursday at 3:00 P.M. in Conference Room B.\n\nCould you please prepare a summary of your department's expenditures for the past two quarters? Also, if possible, please include projected figures for Q4. This will help us make more informed decisions during the meeting.\n\nPlease let me know if you have any scheduling conflicts.\n\nBest regards,\nSarah Mitchell\nDirector of Finance", text:"What is Sarah Mitchell's position at the company?", options:["Department Manager","Director of Finance","Senior Accountant","Vice President of Operations"], answer:1, explanation:"信件結尾署名 Sarah Mitchell — Director of Finance（財務總監）。" },
+  { id:19, part:7, passage:"NOTICE — Maple Street Office Building\n\nDear Tenants,\n\nWe wish to inform you that the building's parking garage will be undergoing routine maintenance from Monday, June 3rd through Friday, June 7th. During this period, access to floors B1 and B2 will be restricted.\n\nAlternative parking is available at the Civic Center parking lot located two blocks north of our building on Oak Avenue. Tenants who use this facility will be reimbursed for parking fees. Please retain your receipts and submit them to the building management office for processing.\n\nWe apologize for the inconvenience and appreciate your understanding and cooperation.\n\nBuilding Management", text:"What should tenants do if they park at the alternative location?", options:["Contact the building management office in advance","Pay a reduced parking rate","Keep receipts and submit them for reimbursement","Register their vehicle with building security"], answer:2, explanation:"通知中說明 Tenants who use this facility will be reimbursed — Please retain your receipts and submit them to the building management office。" },
+  { id:20, part:7, passage:"NOTICE — Maple Street Office Building\n\nDear Tenants,\n\nWe wish to inform you that the building's parking garage will be undergoing routine maintenance from Monday, June 3rd through Friday, June 7th. During this period, access to floors B1 and B2 will be restricted.\n\nAlternative parking is available at the Civic Center parking lot located two blocks north of our building on Oak Avenue. Tenants who use this facility will be reimbursed for parking fees. Please retain your receipts and submit them to the building management office for processing.\n\nWe apologize for the inconvenience and appreciate your understanding and cooperation.\n\nBuilding Management", text:"How long will the parking garage maintenance last?", options:["Two days","Three days","Five days","One week"], answer:2, explanation:"維修期間為 Monday June 3rd through Friday June 7th，共 5 個工作日（5 days）。" }
+];
+
+const EXTRA_QUESTIONS = [
+  { id:21, part:5, text:"The management team ------- a new approach to handling customer complaints last week.", options:["implement","implemented","implementing","implementation"], answer:1, explanation:"last week 是過去時間點，用簡單過去式 implemented。" },
+  { id:22, part:5, text:"Participants are encouraged to ask questions ------- the presentation.", options:["during","while","when","for"], answer:0, explanation:"during 後接名詞（the presentation）；while/when 後接子句。" },
+  { id:23, part:5, text:"The new office building is ------- located near several major public transit stations.", options:["convenience","convenient","conveniently","convince"], answer:2, explanation:"副詞 conveniently 修飾動詞 located（便利地坐落於……）。" },
+  { id:24, part:5, text:"------- the project deadline is approaching, the team has decided to work overtime.", options:["Because","Although","Unless","However"], answer:0, explanation:"because 引導原因子句，符合語意（因為截止日期將至，所以決定加班）。" },
+  { id:25, part:5, text:"The board of directors will ------- the proposed merger at next month's meeting.", options:["discuss","discussion","discussed","discussing"], answer:0, explanation:"will 後接原形動詞 discuss。" }
+];
+
+let state = { currentQ:0, answers:{}, reviewed:false, timerInterval:null, secondsLeft:25*60, questions:[], examDone:false };
+
+function loadHistory() { try { return JSON.parse(localStorage.getItem('toeic_history')||'[]'); } catch { return []; } }
+function saveHistory(h) { localStorage.setItem('toeic_history', JSON.stringify(h)); }
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function todayDone() { return loadHistory().some(r=>r.date===todayStr()); }
+
+function init() {
+  updateDashboard(); renderHistory();
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    const tip = document.getElementById('shortcut-tip');
+    if (tip) tip.textContent = '左右滑動可切換題目';
+  }
+}
+
+function updateDashboard() {
+  const history = loadHistory();
+  const totalQ = history.reduce((s,r)=>s+r.total,0);
+  const totalCorrect = history.reduce((s,r)=>s+r.correct,0);
+  const acc = totalQ>0 ? Math.round(totalCorrect/totalQ*100) : 0;
+  const streak = calcStreak(history);
+  document.getElementById('stat-total').textContent = totalQ;
+  document.getElementById('stat-accuracy').textContent = acc+'%';
+  document.getElementById('stat-days').textContent = history.length;
+  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('streak-display').textContent = '🔥 '+streak+' 天';
+  const statusDiv = document.getElementById('today-status');
+  const btn = document.getElementById('start-btn');
+  if (todayDone()) {
+    const today = history.find(r=>r.date===todayStr());
+    statusDiv.innerHTML = `<p style="margin-bottom:12px">今日已完成 <span class="completed-badge">✓ ${today.correct}/${today.total} 正確</span></p>`;
+    btn.textContent = '🔄 再練一次';
+    btn.disabled = false;
+  } else { statusDiv.innerHTML=''; btn.textContent='▶ 開始今日練習'; btn.disabled=false; }
+}
+
+function calcStreak(history) {
+  if (!history.length) return 0;
+  const dates = [...new Set(history.map(r=>r.date))].sort().reverse();
+  let streak = 0;
+  const today = new Date(todayStr());
+  for (let i=0;i<dates.length;i++) {
+    const diff = Math.round((today-new Date(dates[i]))/86400000);
+    if (diff===i||(i===0&&diff===0)) streak++; else break;
+  }
+  return streak;
+}
+
+function buildQuestionSet() {
+  const history = loadHistory();
+  const seed = history.length;
+  let pool = seed%2===1 ? [...QUESTION_BANK.slice(5),...EXTRA_QUESTIONS,...QUESTION_BANK.slice(0,5)] : [...QUESTION_BANK];
+  return pool.slice(0,20);
+}
+
+function startExam() {
+  state = { currentQ:0, answers:{}, reviewed:false, timerInterval:null, secondsLeft:25*60, questions:buildQuestionSet(), examDone:false };
+  showPage('exam'); renderQuestion(); startTimer();
+  if (!window.matchMedia('(pointer: coarse)').matches) showShortcutHint();
+}
+
+function startTimer() {
+  clearInterval(state.timerInterval);
+  updateTimerDisplay();
+  state.timerInterval = setInterval(()=>{
+    state.secondsLeft--;
+    updateTimerDisplay();
+    if (state.secondsLeft<=0) { clearInterval(state.timerInterval); finishExam(); }
+  },1000);
+}
+
+function updateTimerDisplay() {
+  const m=Math.floor(state.secondsLeft/60), s=state.secondsLeft%60;
+  const el=document.getElementById('timer');
+  el.textContent=`${m}:${String(s).padStart(2,'0')}`;
+  el.classList.toggle('danger',state.secondsLeft<120);
+}
+
+function renderQuestion() {
+  const q=state.questions[state.currentQ], total=state.questions.length;
+  document.getElementById('q-counter').textContent=`${state.currentQ+1} / ${total}`;
+  document.getElementById('progress-fill').style.width=`${((state.currentQ+1)/total)*100}%`;
+  const partNames={5:'Part 5 — 句子填空',6:'Part 6 — 段落填空',7:'Part 7 — 閱讀理解'};
+  document.getElementById('part-label').textContent=partNames[q.part]||'';
+  document.getElementById('question-text').innerHTML=q.text.replace('-------','<span class="blank">_______</span>');
+  const pa=document.getElementById('passage-area');
+  pa.innerHTML=q.passage?`<div class="passage">${q.passage.replace(/</g,'&lt;')}</div>`:'';
+  const letters=['A','B','C','D'];
+  document.getElementById('options-area').innerHTML=q.options.map((opt,i)=>{
+    let cls='option-btn';
+    const saved=state.answers[state.currentQ];
+    if(state.reviewed){ if(i===q.answer) cls+=' correct'; else if(saved===i&&i!==q.answer) cls+=' wrong'; }
+    else if(saved===i) cls+=' selected';
+    return `<button class="${cls}" onclick="selectOption(${i})" ${state.reviewed?'disabled':''}><span class="letter">${letters[i]}</span>${opt}</button>`;
+  }).join('');
+  const expEl=document.getElementById('explanation');
+  if(state.reviewed&&q.explanation){ expEl.innerHTML=`<strong>解析：</strong>${q.explanation}`; expEl.classList.add('show'); }
+  else expEl.classList.remove('show');
+  document.getElementById('prev-btn').disabled=state.currentQ===0;
+  const nb=document.getElementById('next-btn');
+  if(state.currentQ===total-1){ nb.textContent=state.reviewed?'完成檢視':'提交答案'; nb.className='btn btn-success'; }
+  else { nb.textContent='確認並繼續 →'; nb.className='btn btn-primary'; }
+}
+
+function selectOption(i) { if(state.reviewed) return; state.answers[state.currentQ]=i; renderQuestion(); }
+
+function nextQ() {
+  if(state.reviewed){ if(state.currentQ<state.questions.length-1){state.currentQ++;renderQuestion();}else closeModal(); return; }
+  if(state.currentQ<state.questions.length-1){ state.currentQ++; renderQuestion(); } else finishExam();
+}
+function prevQ() { if(state.currentQ>0){state.currentQ--;renderQuestion();} }
+
+function finishExam() {
+  clearInterval(state.timerInterval); state.examDone=true;
+  let correct=0;
+  state.questions.forEach((q,i)=>{ if(state.answers[i]===q.answer) correct++; });
+  const total=state.questions.length, pct=Math.round(correct/total*100);
+  const history=loadHistory();
+  const existing=history.findIndex(r=>r.date===todayStr());
+  const record={date:todayStr(),correct,total,pct,answers:{...state.answers},time:new Date().toISOString()};
+  if(existing>=0) history[existing]=record; else history.push(record);
+  saveHistory(history); updateDashboard();
+  const color=pct>=80?'#0e9f6e':pct>=60?'#ff8c00':'#f05252';
+  document.getElementById('modal-score-circle').innerHTML=`<div class="score-circle" style="background:${color}15;border:4px solid ${color};color:${color}"><div class="pct">${pct}%</div><div class="sub">${correct}/${total} 正確</div></div>`;
+  const elapsed=25*60-state.secondsLeft, mm=Math.floor(elapsed/60), ss=elapsed%60;
+  document.getElementById('modal-stats').innerHTML=`
+    <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:var(--primary)">${correct}</div><div style="font-size:.8rem;color:var(--muted)">答對題數</div></div>
+    <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:var(--danger)">${total-correct}</div><div style="font-size:.8rem;color:var(--muted)">答錯題數</div></div>
+    <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700">${mm}:${String(ss).padStart(2,'0')}</div><div style="font-size:.8rem;color:var(--muted)">作答時間</div></div>
+    <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:${color}">${pct>=80?'優秀':pct>=60?'良好':'待加強'}</div><div style="font-size:.8rem;color:var(--muted)">評級</div></div>`;
+  const letters=['A','B','C','D'];
+  document.getElementById('modal-breakdown').innerHTML=state.questions.map((q,i)=>{
+    const a=state.answers[i], ok=a===q.answer, skip=a===undefined;
+    return `<div class="result-row"><span class="q-num">Q${i+1}</span><span class="q-text">${q.text.replace('-------','_____').substring(0,50)}…</span><span class="badge ${skip?'skip':ok?'ok':'fail'}">${skip?'未答':ok?'✓ '+letters[q.answer]:'✗ '+letters[q.answer]}</span></div>`;
+  }).join('');
+  document.getElementById('result-modal').classList.add('open');
+}
+
+function reviewExam() { state.reviewed=true; state.currentQ=0; document.getElementById('result-modal').classList.remove('open'); renderQuestion(); }
+function closeModal() { document.getElementById('result-modal').classList.remove('open'); showPage('dashboard'); updateDashboard(); renderHistory(); }
+
+function renderHistory() {
+  const history=loadHistory().slice().reverse();
+  const el=document.getElementById('history-list');
+  if(!history.length){ el.innerHTML='<div class="empty-state">📭 尚無練習記錄<br><small>完成第一次練習後會顯示在這裡</small></div>'; return; }
+  el.innerHTML=history.map(r=>{
+    const color=r.pct>=80?'#0e9f6e':r.pct>=60?'#ff8c00':'#f05252';
+    return `<div class="history-item"><span class="history-date">${r.date}</span><div class="history-bar"><div class="history-fill" style="width:${r.pct}%;background:${color}"></div></div><span class="history-score" style="color:${color}">${r.correct}/${r.total}</span></div>`;
+  }).join('');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const idx={dashboard:0,exam:1,history:2}[name];
+  document.querySelectorAll('.tab-btn')[idx]?.classList.add('active');
+  ['dashboard','exam','history'].forEach(n=>{ const el=document.getElementById('bnav-'+n); if(el) el.classList.toggle('active',n===name); });
+  if(name==='history') renderHistory();
+  if(name==='dashboard'){ clearInterval(state.timerInterval); updateDashboard(); }
+}
+
+document.addEventListener('keydown',(e)=>{
+  const page=document.querySelector('.page.active');
+  if(!page||page.id!=='page-exam') return;
+  if(state.reviewed){ if(e.key==='ArrowRight'||e.key==='Enter') nextQ(); return; }
+  const map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+  const key=e.key.toLowerCase();
+  if(key in map) selectOption(map[key]);
+  if(e.key==='Enter'||e.key==='ArrowRight') nextQ();
+  if(e.key==='ArrowLeft') prevQ();
+});
+
+function showShortcutHint() {
+  const hint=document.getElementById('shortcut-hint');
+  hint.classList.add('show');
+  setTimeout(()=>hint.classList.remove('show'),3000);
+}
+
+(function(){
+  let startX=0,startY=0;
+  document.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',e=>{
+    const page=document.querySelector('.page.active');
+    if(!page||page.id!=='page-exam') return;
+    const dx=e.changedTouches[0].clientX-startX, dy=e.changedTouches[0].clientY-startY;
+    if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*0.8) return;
+    if(dx<0) nextQ(); else prevQ();
+  },{passive:true});
+})();
+
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  if(!localStorage.getItem('a2hs_dismissed')) document.getElementById('a2hs-banner').style.display='flex';
+});
+document.getElementById('a2hs-banner').addEventListener('click',async(e)=>{
+  if(e.target.closest('.a2hs-close')) return;
+  if(deferredPrompt){ deferredPrompt.prompt(); const{outcome}=await deferredPrompt.userChoice; if(outcome==='accepted') dismissA2HS(); deferredPrompt=null; }
+});
+function dismissA2HS(){ localStorage.setItem('a2hs_dismissed','1'); document.getElementById('a2hs-banner').style.display='none'; }
+
+(function(){
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isInStandalone=window.navigator.standalone;
+  if(isIOS&&!isInStandalone&&!localStorage.getItem('a2hs_dismissed')){
+    const banner=document.getElementById('a2hs-banner');
+    banner.style.display='flex';
+    banner.querySelector('small').textContent='點「分享」→「加入主畫面」即可';
+  }
+})();
+
+init();
+</script>
+</body>
+</html>
