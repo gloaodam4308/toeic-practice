@@ -10,169 +10,152 @@
 <title>TOEIC 每日練習</title>
 <style>
   :root {
-    --primary: #1a56db;
-    --primary-dark: #1e429f;
-    --success: #0e9f6e;
-    --danger: #f05252;
-    --warning: #ff8c00;
-    --bg: #f3f4f6;
-    --card: #ffffff;
-    --text: #111827;
-    --muted: #6b7280;
-    --border: #e5e7eb;
+    --primary:#1a56db;--primary-dark:#1e429f;--success:#0e9f6e;
+    --danger:#f05252;--warning:#ff8c00;--bg:#f3f4f6;
+    --card:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-  nav { background: var(--primary); color: white; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
-  nav .logo { font-size: 1.2rem; font-weight: 700; letter-spacing: .5px; }
-  nav .nav-tabs { display: flex; gap: 4px; }
-  nav .tab-btn { background: transparent; border: none; color: rgba(255,255,255,.75); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: .9rem; transition: all .15s; }
-  nav .tab-btn.active, nav .tab-btn:hover { background: rgba(255,255,255,.15); color: white; }
-  nav .streak { font-size: .85rem; background: rgba(255,255,255,.15); padding: 4px 12px; border-radius: 20px; }
+  /* NAV */
+  nav{background:var(--primary);color:white;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+  nav .logo{font-size:1.2rem;font-weight:700;}
+  nav .nav-tabs{display:flex;gap:4px;}
+  nav .tab-btn{background:transparent;border:none;color:rgba(255,255,255,.75);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.9rem;transition:all .15s;}
+  nav .tab-btn.active,nav .tab-btn:hover{background:rgba(255,255,255,.15);color:white;}
+  nav .streak{font-size:.85rem;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;}
 
-  .bottom-nav { display: none; }
+  /* BOTTOM NAV */
+  .bottom-nav{display:none;}
 
-  .page { display: none; max-width: 860px; margin: 0 auto; padding: 24px 16px; }
-  .page.active { display: block; }
+  /* PAGES */
+  .page{display:none;max-width:860px;margin:0 auto;padding:24px 16px;}
+  .page.active{display:block;}
+  .card{background:var(--card);border-radius:12px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:16px;}
 
-  .card { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px; }
+  /* DASHBOARD */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px;}
+  .stat-box{background:var(--card);border-radius:10px;padding:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+  .stat-box .num{font-size:2rem;font-weight:700;color:var(--primary);}
+  .stat-box .label{font-size:.78rem;color:var(--muted);margin-top:2px;}
+  .start-btn{width:100%;padding:16px;background:var(--primary);color:white;border:none;border-radius:10px;font-size:1.1rem;font-weight:600;cursor:pointer;transition:background .15s;}
+  .start-btn:hover{background:var(--primary-dark);}
+  .completed-badge{display:inline-block;background:#d1fae5;color:#065f46;padding:4px 12px;border-radius:20px;font-size:.85rem;font-weight:600;}
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
-  .stat-box { background: var(--card); border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
-  .stat-box .num { font-size: 2rem; font-weight: 700; color: var(--primary); }
-  .stat-box .label { font-size: .8rem; color: var(--muted); margin-top: 2px; }
-  .start-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background .15s; }
-  .start-btn:hover { background: var(--primary-dark); }
-  .start-btn:disabled { background: #9ca3af; cursor: not-allowed; }
-  .completed-badge { display: inline-block; background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: .85rem; font-weight: 600; }
+  /* EXAM */
+  .exam-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .progress-bar{flex:1;height:8px;background:#e5e7eb;border-radius:4px;margin:0 16px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--primary);border-radius:4px;transition:width .3s;}
+  .timer{font-size:1.1rem;font-weight:700;color:var(--warning);min-width:60px;text-align:right;}
+  .timer.danger{color:var(--danger);animation:pulse .5s infinite alternate;}
+  @keyframes pulse{from{opacity:1}to{opacity:.4}}
+  .q-counter{font-size:.9rem;color:var(--muted);min-width:70px;}
 
-  .exam-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .progress-bar { flex: 1; height: 8px; background: #e5e7eb; border-radius: 4px; margin: 0 16px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--primary); border-radius: 4px; transition: width .3s; }
-  .timer { font-size: 1.1rem; font-weight: 700; color: var(--warning); min-width: 60px; text-align: right; }
-  .timer.danger { color: var(--danger); animation: pulse .5s infinite alternate; }
-  @keyframes pulse { from { opacity: 1; } to { opacity: .4; } }
-  .q-counter { font-size: .9rem; color: var(--muted); min-width: 70px; }
+  .part-label{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:10px;}
+  .part-label.reading{background:#eff6ff;color:var(--primary);}
+  .part-label.listening{background:#fdf4ff;color:#7c3aed;}
 
-  .part-label { display: inline-block; background: #eff6ff; color: var(--primary); font-size: .75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
-  .question-text { font-size: 1.05rem; line-height: 1.7; margin-bottom: 18px; }
-  .passage { background: #f9fafb; border-left: 4px solid var(--primary); padding: 14px 16px; border-radius: 4px; margin-bottom: 18px; font-size: .95rem; line-height: 1.8; white-space: pre-line; }
-  .blank { display: inline-block; border-bottom: 2px solid var(--primary); min-width: 80px; color: var(--primary); font-weight: 600; text-align: center; padding: 0 4px; }
+  /* LISTENING UI */
+  .scene-box{background:#fdf4ff;border-left:4px solid #7c3aed;padding:14px 16px;border-radius:4px;margin-bottom:16px;font-size:.95rem;line-height:1.7;}
+  .audio-panel{background:#f5f3ff;border:2px solid #ddd6fe;border-radius:12px;padding:16px;margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .audio-label{font-size:.8rem;color:#7c3aed;font-weight:600;text-align:center;}
+  .play-btn{display:flex;align-items:center;gap:8px;background:#7c3aed;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .15s;}
+  .play-btn:hover{background:#6d28d9;}
+  .play-btn.playing{background:#0e9f6e;}
+  .play-btn svg{width:20px;height:20px;flex-shrink:0;}
+  .audio-note{font-size:.78rem;color:var(--muted);text-align:center;}
+  @keyframes soundwave{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+  .wave-bars{display:flex;align-items:center;gap:3px;height:20px;}
+  .wave-bars span{display:inline-block;width:4px;background:#7c3aed;border-radius:2px;animation:soundwave .8s ease-in-out infinite;}
+  .wave-bars span:nth-child(2){animation-delay:.15s;}
+  .wave-bars span:nth-child(3){animation-delay:.3s;}
+  .wave-bars span:nth-child(4){animation-delay:.15s;}
+  .wave-bars.paused span{animation:none;transform:scaleY(.4);}
 
-  .options { display: grid; gap: 10px; }
-  .option-btn { width: 100%; text-align: left; padding: 13px 16px; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-size: .97rem; transition: all .15s; display: flex; align-items: center; gap: 10px; }
-  .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #eff6ff; }
-  .option-btn.selected { border-color: var(--primary); background: #eff6ff; }
-  .option-btn.correct { border-color: var(--success); background: #ecfdf5; color: #065f46; }
-  .option-btn.wrong { border-color: var(--danger); background: #fef2f2; color: #991b1b; }
-  .option-btn .letter { width: 26px; height: 26px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .8rem; flex-shrink: 0; }
-  .option-btn.selected .letter { background: var(--primary); color: white; }
-  .option-btn.correct .letter { background: var(--success); color: white; }
-  .option-btn.wrong .letter { background: var(--danger); color: white; }
+  /* READING UI */
+  .passage{background:#f9fafb;border-left:4px solid var(--primary);padding:14px 16px;border-radius:4px;margin-bottom:18px;font-size:.95rem;line-height:1.8;white-space:pre-line;}
+  .question-text{font-size:1.05rem;line-height:1.7;margin-bottom:18px;}
+  .blank{display:inline-block;border-bottom:2px solid var(--primary);min-width:80px;color:var(--primary);font-weight:600;text-align:center;padding:0 4px;}
 
-  .explanation { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; margin-top: 14px; font-size: .9rem; line-height: 1.6; display: none; }
-  .explanation.show { display: block; }
-  .explanation strong { color: #92400e; }
+  /* OPTIONS */
+  .options{display:grid;gap:10px;}
+  .option-btn{width:100%;text-align:left;padding:13px 16px;border:2px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-size:.97rem;transition:all .15s;display:flex;align-items:center;gap:10px;}
+  .option-btn:hover:not(:disabled){border-color:var(--primary);background:#eff6ff;}
+  .option-btn.selected{border-color:var(--primary);background:#eff6ff;}
+  .option-btn.correct{border-color:var(--success);background:#ecfdf5;color:#065f46;}
+  .option-btn.wrong{border-color:var(--danger);background:#fef2f2;color:#991b1b;}
+  .option-btn .letter{width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;}
+  .option-btn.selected .letter{background:var(--primary);color:white;}
+  .option-btn.correct .letter{background:var(--success);color:white;}
+  .option-btn.wrong .letter{background:var(--danger);color:white;}
 
-  .nav-btns { display: flex; gap: 10px; margin-top: 20px; }
-  .btn { padding: 10px 24px; border-radius: 8px; font-size: .95rem; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
-  .btn-primary { background: var(--primary); color: white; }
-  .btn-primary:hover { background: var(--primary-dark); }
-  .btn-outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
-  .btn-outline:hover { background: #eff6ff; }
-  .btn-success { background: var(--success); color: white; }
+  .explanation{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;margin-top:14px;font-size:.9rem;line-height:1.6;display:none;}
+  .explanation.show{display:block;}
+  .explanation strong{color:#92400e;}
 
-  .score-circle { width: 140px; height: 140px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; font-weight: 700; }
-  .score-circle .pct { font-size: 2.2rem; }
-  .score-circle .sub { font-size: .85rem; opacity: .8; }
-  .result-breakdown { display: grid; gap: 8px; margin-bottom: 20px; }
-  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; background: #f9fafb; }
-  .result-row .q-num { font-weight: 600; font-size: .9rem; color: var(--muted); }
-  .result-row .q-text { flex: 1; margin: 0 12px; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .badge { padding: 3px 10px; border-radius: 20px; font-size: .8rem; font-weight: 600; }
-  .badge.ok { background: #d1fae5; color: #065f46; }
-  .badge.fail { background: #fee2e2; color: #991b1b; }
-  .badge.skip { background: #f3f4f6; color: var(--muted); }
+  /* NAV BUTTONS */
+  .nav-btns{display:flex;gap:10px;margin-top:20px;}
+  .btn{padding:10px 24px;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+  .btn-primary{background:var(--primary);color:white;}
+  .btn-primary:hover{background:var(--primary-dark);}
+  .btn-outline{background:white;color:var(--primary);border:2px solid var(--primary);}
+  .btn-outline:hover{background:#eff6ff;}
+  .btn-success{background:var(--success);color:white;}
 
-  .history-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 8px; background: #f9fafb; margin-bottom: 8px; cursor: pointer; transition: background .15s; }
-  .history-item:hover { background: #eff6ff; }
-  .history-date { font-size: .85rem; color: var(--muted); }
-  .history-score { font-weight: 700; }
-  .history-bar { height: 6px; flex: 1; background: #e5e7eb; border-radius: 3px; margin: 0 16px; overflow: hidden; }
-  .history-fill { height: 100%; border-radius: 3px; }
-  .empty-state { text-align: center; color: var(--muted); padding: 48px 0; }
+  /* MODAL */
+  .score-circle{width:140px;height:140px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px;font-weight:700;}
+  .score-circle .pct{font-size:2.2rem;}
+  .score-circle .sub{font-size:.85rem;opacity:.8;}
+  .result-breakdown{display:grid;gap:8px;margin-bottom:20px;}
+  .result-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;background:#f9fafb;}
+  .result-row .q-num{font-weight:600;font-size:.9rem;color:var(--muted);}
+  .result-row .q-text{flex:1;margin:0 12px;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .badge{padding:3px 10px;border-radius:20px;font-size:.8rem;font-weight:600;}
+  .badge.ok{background:#d1fae5;color:#065f46;}
+  .badge.fail{background:#fee2e2;color:#991b1b;}
+  .badge.skip{background:#f3f4f6;color:var(--muted);}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:white;border-radius:14px;padding:28px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;}
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: none; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: white; border-radius: 14px; padding: 28px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
-  .modal h3 { font-size: 1.2rem; margin-bottom: 16px; }
+  /* HISTORY */
+  .history-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:8px;background:#f9fafb;margin-bottom:8px;}
+  .history-date{font-size:.85rem;color:var(--muted);}
+  .history-score{font-weight:700;}
+  .history-bar{height:6px;flex:1;background:#e5e7eb;border-radius:3px;margin:0 16px;overflow:hidden;}
+  .history-fill{height:100%;border-radius:3px;}
+  .empty-state{text-align:center;color:var(--muted);padding:48px 0;}
 
-  .shortcut-hint { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,.75); color: white; padding: 8px 14px; border-radius: 8px; font-size: .8rem; pointer-events: none; opacity: 0; transition: opacity .3s; }
-  .shortcut-hint.show { opacity: 1; }
+  .shortcut-hint{position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,.75);color:white;padding:8px 14px;border-radius:8px;font-size:.8rem;pointer-events:none;opacity:0;transition:opacity .3s;}
+  .shortcut-hint.show{opacity:1;}
 
-  .a2hs-banner { display: none; }
-
-  @media (max-width: 600px) {
-    nav .nav-tabs { display: none; }
-    nav .logo { font-size: 1rem; }
-    nav { height: 50px; padding: 0 16px; }
-
-    .bottom-nav {
-      display: flex;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: white;
-      border-top: 1px solid var(--border);
-      z-index: 100;
-      padding-bottom: env(safe-area-inset-bottom);
-      box-shadow: 0 -2px 10px rgba(0,0,0,.08);
-    }
-    .bottom-nav button {
-      flex: 1; border: none; background: transparent;
-      padding: 10px 0 8px; font-size: .7rem; color: var(--muted);
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      cursor: pointer; transition: color .15s;
-    }
-    .bottom-nav button.active { color: var(--primary); }
-    .bottom-nav button svg { width: 22px; height: 22px; }
-
-    .page { padding: 12px 12px 80px; }
-    .card { padding: 14px; border-radius: 10px; }
-
-    .option-btn { padding: 16px 14px; font-size: 1rem; min-height: 54px; }
-    .option-btn .letter { width: 32px; height: 32px; font-size: .85rem; }
-
-    .nav-btns { flex-direction: column-reverse; }
-    .nav-btns .btn { width: 100%; padding: 15px; font-size: 1rem; text-align: center; }
-
-    .start-btn { padding: 18px; font-size: 1.15rem; border-radius: 12px; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .stat-box .num { font-size: 1.7rem; }
-    .question-text { font-size: 1rem; }
-    .passage { font-size: .9rem; }
-
-    .modal { border-radius: 14px 14px 0 0; max-height: 90vh; width: 100%; margin-top: auto; }
-    .modal-overlay { align-items: flex-end; }
-
-    .exam-header { margin-bottom: 12px; }
-    .q-counter { font-size: .8rem; min-width: 55px; }
-    .timer { font-size: 1rem; min-width: 52px; }
-    .shortcut-hint { display: none; }
-
-    .a2hs-banner {
-      display: flex; align-items: center; justify-content: space-between;
-      background: #eff6ff; border: 1px solid #bfdbfe;
-      border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
-      font-size: .88rem;
-    }
-    .a2hs-banner strong { display: block; margin-bottom: 2px; color: var(--primary); }
-    .a2hs-banner small { color: var(--muted); }
-    .a2hs-close { background: none; border: none; font-size: 1.2rem; color: var(--muted); cursor: pointer; padding: 4px; }
-  }
-
-  @media (min-width: 601px) {
-    .a2hs-banner { display: none !important; }
+  /* MOBILE */
+  @media(max-width:600px){
+    nav .nav-tabs{display:none;}
+    nav .logo{font-size:1rem;}
+    nav{height:50px;padding:0 16px;}
+    .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 10px rgba(0,0,0,.08);}
+    .bottom-nav button{flex:1;border:none;background:transparent;padding:10px 0 8px;font-size:.7rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:color .15s;}
+    .bottom-nav button.active{color:var(--primary);}
+    .bottom-nav button svg{width:22px;height:22px;}
+    .page{padding:12px 12px 80px;}
+    .card{padding:14px;border-radius:10px;}
+    .option-btn{padding:16px 14px;font-size:1rem;min-height:54px;}
+    .option-btn .letter{width:32px;height:32px;font-size:.85rem;}
+    .nav-btns{flex-direction:column-reverse;}
+    .nav-btns .btn{width:100%;padding:15px;font-size:1rem;text-align:center;}
+    .start-btn{padding:18px;font-size:1.15rem;border-radius:12px;}
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .stat-box .num{font-size:1.7rem;}
+    .question-text{font-size:1rem;}
+    .passage{font-size:.9rem;}
+    .modal{border-radius:14px 14px 0 0;max-height:90vh;width:100%;margin-top:auto;}
+    .modal-overlay{align-items:flex-end;}
+    .exam-header{margin-bottom:12px;}
+    .q-counter{font-size:.8rem;min-width:55px;}
+    .timer{font-size:1rem;min-width:52px;}
+    .shortcut-hint{display:none;}
+    .play-btn{padding:14px 32px;font-size:1.05rem;}
   }
 </style>
 </head>
@@ -182,7 +165,7 @@
   <div class="logo">📝 TOEIC Daily</div>
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="showPage('dashboard')">首頁</button>
-    <button class="tab-btn" onclick="showPage('exam')" id="exam-tab">練習</button>
+    <button class="tab-btn" onclick="showPage('exam')">練習</button>
     <button class="tab-btn" onclick="showPage('history')">歷史</button>
   </div>
   <div class="streak" id="streak-display">🔥 0 天</div>
@@ -190,28 +173,18 @@
 
 <nav class="bottom-nav">
   <button onclick="showPage('dashboard')" id="bnav-dashboard" class="active">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    首頁
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>首頁
   </button>
   <button onclick="showPage('exam')" id="bnav-exam">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-    練習
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>練習
   </button>
   <button onclick="showPage('history')" id="bnav-history">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    歷史
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>歷史
   </button>
 </nav>
 
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
-  <div class="a2hs-banner" id="a2hs-banner" style="display:none">
-    <div>
-      <strong>加入主畫面</strong>
-      <small>像 App 一樣快速開啟練習</small>
-    </div>
-    <button class="a2hs-close" onclick="dismissA2HS()">✕</button>
-  </div>
   <div class="stats-grid">
     <div class="stat-box"><div class="num" id="stat-total">0</div><div class="label">累計題數</div></div>
     <div class="stat-box"><div class="num" id="stat-accuracy">0%</div><div class="label">正確率</div></div>
@@ -220,23 +193,25 @@
   </div>
   <div class="card">
     <h2 style="margin-bottom:8px">今日練習</h2>
-    <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">20 題多益精選考題 · 預計 15 分鐘 · 含解析</p>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">20 題多益精選 · 聽力 + 閱讀 · 含中文解析</p>
     <div id="today-status"></div>
     <button class="start-btn" id="start-btn" onclick="startExam()">▶ 開始今日練習</button>
     <p style="font-size:.8rem;color:var(--muted);margin-top:10px;text-align:center" id="shortcut-tip">快捷鍵：A/B/C/D 選答 · Enter 確認 · → 下一題</p>
   </div>
   <div class="card">
-    <h3 style="margin-bottom:12px">題型分佈</h3>
-    <div style="display:grid;gap:8px">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-        <span>Part 5 — 句子填空（文法／詞彙）</span><span style="color:var(--primary);font-weight:600">10 題</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-        <span>Part 6 — 段落填空</span><span style="color:var(--primary);font-weight:600">4 題</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
-        <span>Part 7 — 閱讀理解</span><span style="color:var(--primary);font-weight:600">6 題</span>
-      </div>
+    <h3 style="margin-bottom:12px">題型分佈（共 45 題題庫）</h3>
+    <div style="margin-bottom:10px;font-size:.8rem;font-weight:600;color:#7c3aed">🎧 聽力 Listening — 20 題</div>
+    <div style="display:grid;gap:6px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:.9rem">Part 1 — 照片描述</span><span style="color:#7c3aed;font-weight:600">4 題</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:.9rem">Part 2 — 應答問題</span><span style="color:#7c3aed;font-weight:600">6 題</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:.9rem">Part 3 — 簡短對話</span><span style="color:#7c3aed;font-weight:600">6 題</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0"><span style="font-size:.9rem">Part 4 — 簡短獨白</span><span style="color:#7c3aed;font-weight:600">4 題</span></div>
+    </div>
+    <div style="margin-bottom:10px;font-size:.8rem;font-weight:600;color:var(--primary)">📖 閱讀 Reading — 25 題</div>
+    <div style="display:grid;gap:6px">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:.9rem">Part 5 — 句子填空</span><span style="color:var(--primary);font-weight:600">15 題</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:.9rem">Part 6 — 段落填空</span><span style="color:var(--primary);font-weight:600">4 題</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0"><span style="font-size:.9rem">Part 7 — 閱讀理解</span><span style="color:var(--primary);font-weight:600">6 題</span></div>
     </div>
   </div>
 </div>
@@ -247,11 +222,12 @@
     <div class="exam-header">
       <div class="q-counter" id="q-counter">1 / 20</div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:5%"></div></div>
-      <div class="timer" id="timer">25:00</div>
+      <div class="timer" id="timer">30:00</div>
     </div>
   </div>
   <div class="card" id="question-card">
-    <span class="part-label" id="part-label">Part 5</span>
+    <span class="part-label reading" id="part-label">Part 5</span>
+    <div id="listening-area"></div>
     <div class="question-text" id="question-text"></div>
     <div id="passage-area"></div>
     <div class="options" id="options-area"></div>
@@ -289,162 +265,390 @@
 <div class="shortcut-hint" id="shortcut-hint">A/B/C/D 選答</div>
 
 <script>
-const QUESTION_BANK = [
-  { id:1, part:5, text:"The company's new marketing strategy has been ------- effective in attracting younger customers.", options:["remarkable","remarkably","remarked","remark"], answer:1, explanation:"副詞 remarkably 修飾形容詞 effective，是正確用法。remarkable 是形容詞，remarked 是動詞過去式，remark 是名詞/動詞。" },
-  { id:2, part:5, text:"All employees are required to ------- their expense reports by the end of the fiscal quarter.", options:["submit","submission","submitted","submitting"], answer:0, explanation:"be required to 後接原形動詞 submit。submission 是名詞，submitted 和 submitting 詞性不符。" },
-  { id:3, part:5, text:"The merger between the two firms was ------- approved by the board of directors last Tuesday.", options:["unanimous","unanimously","unanimity","unanimousness"], answer:1, explanation:"副詞 unanimously 修飾動詞 approved。unanimous 是形容詞，unanimity/unanimousness 是名詞。" },
-  { id:4, part:5, text:"Ms. Chen will be ------- for overseeing the entire construction project during Mr. Park's absence.", options:["responsible","responsibility","responsibly","respond"], answer:0, explanation:"be responsible for 是固定搭配，意為「負責……」。" },
-  { id:5, part:5, text:"The quarterly report showed ------- improvement in the company's financial performance.", options:["consider","considering","considerable","considerably"], answer:2, explanation:"形容詞 considerable 修飾名詞 improvement（相當大的改善）。considerably 是副詞不修飾名詞。" },
-  { id:6, part:5, text:"Applicants ------- have at least five years of experience in project management will be given priority.", options:["who","which","what","whose"], answer:0, explanation:"修飾人（applicants）的關係代名詞用 who，which 修飾物，what 不引導關係子句，whose 後接名詞。" },
-  { id:7, part:5, text:"The new regulations will take ------- on January 1st of next year.", options:["effect","affect","effective","effectively"], answer:0, explanation:"take effect 是固定片語，意為「生效」。affect 是動詞，不能接在 take 後當名詞用。" },
-  { id:8, part:5, text:"------- the high cost of production, the management decided to outsource some manufacturing processes.", options:["Despite","Although","Because of","In spite"], answer:2, explanation:"because of 後接名詞片語（high cost），表原因。Despite/In spite of 後也接名詞但表讓步，although 接子句。此處語意是「因為」高成本而決定外包。" },
-  { id:9, part:5, text:"The training session has been ------- from Monday to Wednesday due to scheduling conflicts.", options:["postponed","proposed","promoted","proceeded"], answer:0, explanation:"postpone 意為「延期」，符合語境（從週一推遲到週三）。propose 提議，promote 晉升/促銷，proceed 繼續。" },
-  { id:10, part:5, text:"Please ensure that all personal belongings are stored ------- during the flight.", options:["secure","securely","security","secured"], answer:1, explanation:"副詞 securely 修飾動詞 stored（安全地存放）。secure 是形容詞/動詞，security 是名詞。" },
-  { id:11, part:6, passage:"Dear Mr. Wilson,\n\nThank you for your interest in the Senior Account Manager position at Greenfield Solutions. We have carefully reviewed your application and are pleased to inform you that you have been selected for an interview.\n\nThe interview is scheduled for Friday, May 22nd, at 2:00 P.M. at our main office. Please bring two copies of your résumé and any _______ certifications or portfolios.", text:"Which word best completes the passage?", options:["relevant","relevance","relevantly","irrelevant"], answer:0, explanation:"relevant 形容詞修飾 certifications（相關的證書）。relevance 是名詞，relevantly 是副詞，irrelevant 語意相反。" },
-  { id:12, part:6, passage:"INTERNAL MEMO\nTo: All Staff\nFrom: Human Resources\n\nWe are pleased to announce that the company will be implementing a new flexible work policy starting next month. Employees will have the _______ to work from home up to three days per week, subject to manager approval.", text:"Which word best completes the memo?", options:["option","opinion","opposition","operation"], answer:0, explanation:"have the option to 是固定搭配，意為「有……的選擇權」。opinion 意見，opposition 反對，operation 操作。" },
-  { id:13, part:6, passage:"Northridge Hotel is proud to announce the opening of our newly renovated conference center. The state-of-the-art facility features 15 meeting rooms, each _______ with the latest audio-visual technology.", text:"Which word best completes the passage?", options:["equip","equipped","equipping","equipment"], answer:1, explanation:"過去分詞 equipped 用作後置形容詞，修飾 rooms（配備了……的會議室）。" },
-  { id:14, part:6, passage:"Attention Passengers:\n\nDue to _______ weather conditions, Flight TR-842 to Singapore has been delayed by approximately two hours. We sincerely apologize for any inconvenience this may cause. Passengers are advised to check the departure board for updated information.", text:"Which word best completes the announcement?", options:["adverse","diverse","reverse","universe"], answer:0, explanation:"adverse weather conditions（惡劣天氣）是常見搭配。diverse 多樣，reverse 相反，universe 宇宙。" },
-  { id:15, part:7, passage:"PRESS RELEASE — For Immediate Release\n\nTechVision Inc. announced today the launch of its latest productivity software, WorkFlow Pro 3.0. The new version includes enhanced collaboration tools, AI-powered scheduling, and a redesigned user interface. WorkFlow Pro 3.0 is available for download starting August 15th.\n\n\"We listened to our customers and redesigned the platform from the ground up,\" said CEO Amanda Foster. \"WorkFlow Pro 3.0 reduces meeting preparation time by 40% and improves team productivity.\"\n\nWorkFlow Pro 3.0 is priced at $29.99 per user per month, with a 30-day free trial available.", text:"According to the press release, what is a feature of WorkFlow Pro 3.0?", options:["A built-in video conferencing system","AI-powered scheduling","Free lifetime access for existing users","A mobile-only interface"], answer:1, explanation:"文中明確提到 AI-powered scheduling 是新功能之一。" },
-  { id:16, part:7, passage:"PRESS RELEASE — For Immediate Release\n\nTechVision Inc. announced today the launch of its latest productivity software, WorkFlow Pro 3.0. The new version includes enhanced collaboration tools, AI-powered scheduling, and a redesigned user interface. WorkFlow Pro 3.0 is available for download starting August 15th.\n\n\"We listened to our customers and redesigned the platform from the ground up,\" said CEO Amanda Foster. \"WorkFlow Pro 3.0 reduces meeting preparation time by 40% and improves team productivity.\"\n\nWorkFlow Pro 3.0 is priced at $29.99 per user per month, with a 30-day free trial available.", text:"What does the CEO say about WorkFlow Pro 3.0?", options:["It was developed without customer feedback.","It costs less than previous versions.","It reduces meeting preparation time by 40%.","It is only available for enterprise customers."], answer:2, explanation:"CEO Amanda Foster 說 reduces meeting preparation time by 40%，是文中的直接引述。" },
-  { id:17, part:7, passage:"Email\nFrom: Sarah Mitchell <s.mitchell@deltagroup.com>\nTo: Thomas Huang <t.huang@deltagroup.com>\nSubject: Q3 Budget Review Meeting\n\nHi Thomas,\n\nI hope this email finds you well. I wanted to confirm our Q3 budget review meeting scheduled for next Thursday at 3:00 P.M. in Conference Room B.\n\nCould you please prepare a summary of your department's expenditures for the past two quarters? Also, if possible, please include projected figures for Q4. This will help us make more informed decisions during the meeting.\n\nPlease let me know if you have any scheduling conflicts.\n\nBest regards,\nSarah Mitchell\nDirector of Finance", text:"What is Sarah Mitchell asking Thomas Huang to do?", options:["Reschedule the meeting to a different time","Prepare a summary of past and projected expenditures","Present the annual budget to the board","Cancel the Q3 budget review meeting"], answer:1, explanation:"Sarah 要求 Thomas prepare a summary of your department's expenditures for the past two quarters 並包括 projected figures for Q4。" },
-  { id:18, part:7, passage:"Email\nFrom: Sarah Mitchell <s.mitchell@deltagroup.com>\nTo: Thomas Huang <t.huang@deltagroup.com>\nSubject: Q3 Budget Review Meeting\n\nHi Thomas,\n\nI hope this email finds you well. I wanted to confirm our Q3 budget review meeting scheduled for next Thursday at 3:00 P.M. in Conference Room B.\n\nCould you please prepare a summary of your department's expenditures for the past two quarters? Also, if possible, please include projected figures for Q4. This will help us make more informed decisions during the meeting.\n\nPlease let me know if you have any scheduling conflicts.\n\nBest regards,\nSarah Mitchell\nDirector of Finance", text:"What is Sarah Mitchell's position at the company?", options:["Department Manager","Director of Finance","Senior Accountant","Vice President of Operations"], answer:1, explanation:"信件結尾署名 Sarah Mitchell — Director of Finance（財務總監）。" },
-  { id:19, part:7, passage:"NOTICE — Maple Street Office Building\n\nDear Tenants,\n\nWe wish to inform you that the building's parking garage will be undergoing routine maintenance from Monday, June 3rd through Friday, June 7th. During this period, access to floors B1 and B2 will be restricted.\n\nAlternative parking is available at the Civic Center parking lot located two blocks north of our building on Oak Avenue. Tenants who use this facility will be reimbursed for parking fees. Please retain your receipts and submit them to the building management office for processing.\n\nWe apologize for the inconvenience and appreciate your understanding and cooperation.\n\nBuilding Management", text:"What should tenants do if they park at the alternative location?", options:["Contact the building management office in advance","Pay a reduced parking rate","Keep receipts and submit them for reimbursement","Register their vehicle with building security"], answer:2, explanation:"通知中說明 Tenants who use this facility will be reimbursed — Please retain your receipts and submit them to the building management office。" },
-  { id:20, part:7, passage:"NOTICE — Maple Street Office Building\n\nDear Tenants,\n\nWe wish to inform you that the building's parking garage will be undergoing routine maintenance from Monday, June 3rd through Friday, June 7th. During this period, access to floors B1 and B2 will be restricted.\n\nAlternative parking is available at the Civic Center parking lot located two blocks north of our building on Oak Avenue. Tenants who use this facility will be reimbursed for parking fees. Please retain your receipts and submit them to the building management office for processing.\n\nWe apologize for the inconvenience and appreciate your understanding and cooperation.\n\nBuilding Management", text:"How long will the parking garage maintenance last?", options:["Two days","Three days","Five days","One week"], answer:2, explanation:"維修期間為 Monday June 3rd through Friday June 7th，共 5 個工作日（5 days）。" }
+// ── READING BANK (25 題) ──────────────────────────────────────────────────────
+const READING_BANK = [
+  {id:1,part:5,type:'reading',text:"The company's new marketing strategy has been ------- effective in attracting younger customers.",options:["remarkable","remarkably","remarked","remark"],answer:1,explanation:"副詞 remarkably 修飾形容詞 effective。"},
+  {id:2,part:5,type:'reading',text:"All employees are required to ------- their expense reports by the end of the fiscal quarter.",options:["submit","submission","submitted","submitting"],answer:0,explanation:"be required to 後接原形動詞 submit。"},
+  {id:3,part:5,type:'reading',text:"The merger between the two firms was ------- approved by the board of directors last Tuesday.",options:["unanimous","unanimously","unanimity","unanimousness"],answer:1,explanation:"副詞 unanimously 修飾動詞 approved。"},
+  {id:4,part:5,type:'reading',text:"Ms. Chen will be ------- for overseeing the entire construction project during Mr. Park's absence.",options:["responsible","responsibility","responsibly","respond"],answer:0,explanation:"be responsible for 是固定搭配，意為「負責……」。"},
+  {id:5,part:5,type:'reading',text:"The quarterly report showed ------- improvement in the company's financial performance.",options:["consider","considering","considerable","considerably"],answer:2,explanation:"形容詞 considerable 修飾名詞 improvement。"},
+  {id:6,part:5,type:'reading',text:"Applicants ------- have at least five years of experience in project management will be given priority.",options:["who","which","what","whose"],answer:0,explanation:"修飾人（applicants）的關係代名詞用 who。"},
+  {id:7,part:5,type:'reading',text:"The new regulations will take ------- on January 1st of next year.",options:["effect","affect","effective","effectively"],answer:0,explanation:"take effect 是固定片語，意為「生效」。"},
+  {id:8,part:5,type:'reading',text:"------- the high cost of production, the management decided to outsource some manufacturing processes.",options:["Despite","Although","Because of","In spite"],answer:2,explanation:"because of 後接名詞片語表原因，符合語意。"},
+  {id:9,part:5,type:'reading',text:"The training session has been ------- from Monday to Wednesday due to scheduling conflicts.",options:["postponed","proposed","promoted","proceeded"],answer:0,explanation:"postpone 意為「延期」，符合語境。"},
+  {id:10,part:5,type:'reading',text:"Please ensure that all personal belongings are stored ------- during the flight.",options:["secure","securely","security","secured"],answer:1,explanation:"副詞 securely 修飾動詞 stored。"},
+  {id:11,part:5,type:'reading',text:"The management team ------- a new approach to handling customer complaints last week.",options:["implement","implemented","implementing","implementation"],answer:1,explanation:"last week 是過去時間點，用簡單過去式 implemented。"},
+  {id:12,part:5,type:'reading',text:"Participants are encouraged to ask questions ------- the presentation.",options:["during","while","when","for"],answer:0,explanation:"during 後接名詞（the presentation）；while/when 後接子句。"},
+  {id:13,part:5,type:'reading',text:"The new office building is ------- located near several major public transit stations.",options:["convenience","convenient","conveniently","convince"],answer:2,explanation:"副詞 conveniently 修飾動詞 located。"},
+  {id:14,part:5,type:'reading',text:"------- the project deadline is approaching, the team has decided to work overtime.",options:["Because","Although","Unless","However"],answer:0,explanation:"because 引導原因子句，符合語意。"},
+  {id:15,part:5,type:'reading',text:"The board of directors will ------- the proposed merger at next month's meeting.",options:["discuss","discussion","discussed","discussing"],answer:0,explanation:"will 後接原形動詞 discuss。"},
+  {id:16,part:6,type:'reading',passage:"Dear Mr. Wilson,\n\nThank you for your interest in the Senior Account Manager position at Greenfield Solutions. We have carefully reviewed your application and are pleased to inform you that you have been selected for an interview.\n\nThe interview is scheduled for Friday, May 22nd, at 2:00 P.M. at our main office. Please bring two copies of your résumé and any _______ certifications or portfolios.",text:"Which word best completes the passage?",options:["relevant","relevance","relevantly","irrelevant"],answer:0,explanation:"relevant 形容詞修飾 certifications（相關的證書）。"},
+  {id:17,part:6,type:'reading',passage:"INTERNAL MEMO\nTo: All Staff\nFrom: Human Resources\n\nWe are pleased to announce that the company will be implementing a new flexible work policy starting next month. Employees will have the _______ to work from home up to three days per week, subject to manager approval.",text:"Which word best completes the memo?",options:["option","opinion","opposition","operation"],answer:0,explanation:"have the option to 是固定搭配，意為「有……的選擇權」。"},
+  {id:18,part:6,type:'reading',passage:"Northridge Hotel is proud to announce the opening of our newly renovated conference center. The state-of-the-art facility features 15 meeting rooms, each _______ with the latest audio-visual technology.",text:"Which word best completes the passage?",options:["equip","equipped","equipping","equipment"],answer:1,explanation:"過去分詞 equipped 用作後置形容詞，修飾 rooms。"},
+  {id:19,part:6,type:'reading',passage:"Attention Passengers:\n\nDue to _______ weather conditions, Flight TR-842 to Singapore has been delayed by approximately two hours. We sincerely apologize for any inconvenience this may cause.",text:"Which word best completes the announcement?",options:["adverse","diverse","reverse","universe"],answer:0,explanation:"adverse weather conditions（惡劣天氣）是常見搭配。"},
+  {id:20,part:7,type:'reading',passage:"PRESS RELEASE\n\nTechVision Inc. announced the launch of WorkFlow Pro 3.0. The new version includes enhanced collaboration tools, AI-powered scheduling, and a redesigned user interface.\n\n\"We redesigned the platform from the ground up,\" said CEO Amanda Foster. \"WorkFlow Pro 3.0 reduces meeting preparation time by 40%.\"\n\nPriced at $29.99 per user per month, with a 30-day free trial available.",text:"According to the press release, what is a feature of WorkFlow Pro 3.0?",options:["A built-in video conferencing system","AI-powered scheduling","Free lifetime access for existing users","A mobile-only interface"],answer:1,explanation:"文中明確提到 AI-powered scheduling 是新功能之一。"},
+  {id:21,part:7,type:'reading',passage:"PRESS RELEASE\n\nTechVision Inc. announced the launch of WorkFlow Pro 3.0. The new version includes enhanced collaboration tools, AI-powered scheduling, and a redesigned user interface.\n\n\"We redesigned the platform from the ground up,\" said CEO Amanda Foster. \"WorkFlow Pro 3.0 reduces meeting preparation time by 40%.\"\n\nPriced at $29.99 per user per month, with a 30-day free trial available.",text:"What does the CEO say about WorkFlow Pro 3.0?",options:["It was developed without customer feedback.","It costs less than previous versions.","It reduces meeting preparation time by 40%.","It is only available for enterprise customers."],answer:2,explanation:"CEO 說 reduces meeting preparation time by 40%，是文中的直接引述。"},
+  {id:22,part:7,type:'reading',passage:"Email — Subject: Q3 Budget Review Meeting\n\nHi Thomas,\n\nI wanted to confirm our Q3 budget review meeting scheduled for next Thursday at 3:00 P.M. in Conference Room B.\n\nCould you please prepare a summary of your department's expenditures for the past two quarters? Also include projected figures for Q4.\n\nBest regards,\nSarah Mitchell\nDirector of Finance",text:"What is Sarah Mitchell asking Thomas Huang to do?",options:["Reschedule the meeting","Prepare a summary of past and projected expenditures","Present the annual budget to the board","Cancel the Q3 meeting"],answer:1,explanation:"Sarah 要求 Thomas 準備過去兩季的費用摘要並包括 Q4 預測數字。"},
+  {id:23,part:7,type:'reading',passage:"Email — Subject: Q3 Budget Review Meeting\n\nHi Thomas,\n\nI wanted to confirm our Q3 budget review meeting scheduled for next Thursday at 3:00 P.M. in Conference Room B.\n\nCould you please prepare a summary of your department's expenditures for the past two quarters? Also include projected figures for Q4.\n\nBest regards,\nSarah Mitchell\nDirector of Finance",text:"What is Sarah Mitchell's position at the company?",options:["Department Manager","Director of Finance","Senior Accountant","Vice President of Operations"],answer:1,explanation:"信件結尾署名 Director of Finance（財務總監）。"},
+  {id:24,part:7,type:'reading',passage:"NOTICE — Maple Street Office Building\n\nThe building's parking garage will be undergoing routine maintenance from Monday, June 3rd through Friday, June 7th. Access to floors B1 and B2 will be restricted.\n\nAlternative parking is available at the Civic Center parking lot two blocks north on Oak Avenue. Tenants will be reimbursed for parking fees. Please retain your receipts and submit them to the building management office.",text:"What should tenants do if they park at the alternative location?",options:["Contact the building management office in advance","Pay a reduced parking rate","Keep receipts and submit them for reimbursement","Register their vehicle with building security"],answer:2,explanation:"通知說明需保留收據並提交給大樓管理辦公室以報銷停車費。"},
+  {id:25,part:7,type:'reading',passage:"NOTICE — Maple Street Office Building\n\nThe building's parking garage will be undergoing routine maintenance from Monday, June 3rd through Friday, June 7th. Access to floors B1 and B2 will be restricted.\n\nAlternative parking is available at the Civic Center parking lot two blocks north on Oak Avenue. Tenants will be reimbursed for parking fees. Please retain your receipts and submit them to the building management office.",text:"How long will the parking garage maintenance last?",options:["Two days","Three days","Five days","One week"],answer:2,explanation:"維修期間為 Monday June 3rd through Friday June 7th，共 5 個工作日。"}
 ];
 
-const EXTRA_QUESTIONS = [
-  { id:21, part:5, text:"The management team ------- a new approach to handling customer complaints last week.", options:["implement","implemented","implementing","implementation"], answer:1, explanation:"last week 是過去時間點，用簡單過去式 implemented。" },
-  { id:22, part:5, text:"Participants are encouraged to ask questions ------- the presentation.", options:["during","while","when","for"], answer:0, explanation:"during 後接名詞（the presentation）；while/when 後接子句。" },
-  { id:23, part:5, text:"The new office building is ------- located near several major public transit stations.", options:["convenience","convenient","conveniently","convince"], answer:2, explanation:"副詞 conveniently 修飾動詞 located（便利地坐落於……）。" },
-  { id:24, part:5, text:"------- the project deadline is approaching, the team has decided to work overtime.", options:["Because","Although","Unless","However"], answer:0, explanation:"because 引導原因子句，符合語意（因為截止日期將至，所以決定加班）。" },
-  { id:25, part:5, text:"The board of directors will ------- the proposed merger at next month's meeting.", options:["discuss","discussion","discussed","discussing"], answer:0, explanation:"will 後接原形動詞 discuss。" }
+// ── LISTENING BANK (20 題) ───────────────────────────────────────────────────
+const LISTENING_BANK = [
+  // PART 1 — Photographs (4 題)
+  {id:101,part:1,type:'listening',
+   scene:"📷 場景描述：一位女士坐在辦公桌前，正在使用電腦",
+   audio:"Statement A. A woman is typing on a keyboard. Statement B. A man is reading a book at a desk. Statement C. Two people are having a meeting in an office. Statement D. A woman is talking on the phone.",
+   text:"Which statement best describes the picture?",
+   options:["A woman is typing on a keyboard.","A man is reading a book at a desk.","Two people are having a meeting.","A woman is talking on the phone."],
+   answer:0,explanation:"場景為女士在辦公桌前使用電腦，Statement A「女士正在鍵盤上打字」最符合描述。"},
+
+  {id:102,part:1,type:'listening',
+   scene:"📷 場景描述：倉庫內有工人正在將箱子搬上一輛卡車",
+   audio:"Statement A. The workers are unloading boxes from a truck. Statement B. Two men are carrying boxes into a building. Statement C. Workers are loading boxes onto a truck. Statement D. A truck is parked outside a warehouse.",
+   text:"Which statement best describes the picture?",
+   options:["The workers are unloading boxes from a truck.","Two men are carrying boxes into a building.","Workers are loading boxes onto a truck.","A truck is parked outside a warehouse."],
+   answer:2,explanation:"工人正在將箱子搬「上」卡車（loading onto），Statement C 最符合。"},
+
+  {id:103,part:1,type:'listening',
+   scene:"📷 場景描述：一群人在餐廳的戶外座位區用餐",
+   audio:"Statement A. People are eating at an outdoor restaurant. Statement B. Customers are waiting in line at a cafe. Statement C. A waiter is serving food inside a restaurant. Statement D. People are preparing food in a kitchen.",
+   text:"Which statement best describes the picture?",
+   options:["People are eating at an outdoor restaurant.","Customers are waiting in line at a cafe.","A waiter is serving food inside a restaurant.","People are preparing food in a kitchen."],
+   answer:0,explanation:"場景為戶外餐廳用餐，Statement A 最符合。"},
+
+  {id:104,part:1,type:'listening',
+   scene:"📷 場景描述：一男一女站在白板前，正在進行簡報",
+   audio:"Statement A. A man is writing on a whiteboard alone. Statement B. A woman is giving a presentation to a large audience. Statement C. A man and a woman are standing near a whiteboard. Statement D. Two people are sitting at a conference table.",
+   text:"Which statement best describes the picture?",
+   options:["A man is writing on a whiteboard alone.","A woman is giving a presentation to a large audience.","A man and a woman are standing near a whiteboard.","Two people are sitting at a conference table."],
+   answer:2,explanation:"一男一女站在白板旁，Statement C 最符合。"},
+
+  // PART 2 — Question-Response (6 題)
+  {id:105,part:2,type:'listening',
+   audio:"When does the staff meeting start?",
+   text:"Choose the best response.",
+   options:["It starts at three o'clock.","In the large conference room.","Yes, I attended it last week."],
+   answer:0,explanation:"問的是「幾點開始」，回答時間 A 最合適。B 回答地點，C 是 Yes/No 但問題非一般疑問句。"},
+
+  {id:106,part:2,type:'listening',
+   audio:"Have you reviewed the quarterly report yet?",
+   text:"Choose the best response.",
+   options:["No, I haven't had time to look at it.","The report is on your desk.","Yes, the quarter was very productive."],
+   answer:0,explanation:"Have you...yet? 是完成式問句，A 直接回答「還沒有時間看」最合適。"},
+
+  {id:107,part:2,type:'listening',
+   audio:"Who is responsible for the new marketing campaign?",
+   text:"Choose the best response.",
+   options:["Yes, the campaign was very successful.","Ms. Rodriguez is leading the project.","The marketing department is on the third floor."],
+   answer:1,explanation:"Who 問人，B 直接說出負責人最合適。A 回答結果，C 回答地點。"},
+
+  {id:108,part:2,type:'listening',
+   audio:"Could you please send me the updated schedule?",
+   text:"Choose the best response.",
+   options:["I'll email it to you right away.","The schedule was changed last week.","Yes, the meeting is scheduled for Monday."],
+   answer:0,explanation:"請求對方寄送，A「我馬上寄給你」是最直接、恰當的回應。"},
+
+  {id:109,part:2,type:'listening',
+   audio:"Why was the delivery delayed?",
+   text:"Choose the best response.",
+   options:["The package arrived this morning.","There was heavy traffic on the highway.","We deliver on weekdays only."],
+   answer:1,explanation:"Why 問原因，B「高速公路塞車」直接回答原因最合適。"},
+
+  {id:110,part:2,type:'listening',
+   audio:"Where should I submit my expense report?",
+   text:"Choose the best response.",
+   options:["By the end of the month.","You can give it to the accounting department.","The report needs three signatures."],
+   answer:1,explanation:"Where 問地點，B「交給會計部門」直接回答地點最合適。"},
+
+  // PART 3 — Conversations (6 題 = 2 對話 × 3 題)
+  {id:111,part:3,type:'listening',groupId:'c1',
+   audio:"Man: Good morning. I'd like to check in. My name is David Chen. Woman: Good morning, Mr. Chen. You have a standard room for two nights, checking out on Friday? Man: That's correct. Is it possible to get a room on a higher floor? I prefer the view. Woman: Of course. I'll upgrade you to a room on the fifteenth floor at no additional charge. Here's your key card. Man: That's wonderful. Thank you very much.",
+   text:"Where does this conversation most likely take place?",
+   options:["At an airport check-in counter","At a hotel front desk","At a restaurant","At a company office"],
+   answer:1,explanation:"對話提到 check in、room、key card 等，明顯是在飯店櫃台。"},
+
+  {id:112,part:3,type:'listening',groupId:'c1',
+   audio:"Man: Good morning. I'd like to check in. My name is David Chen. Woman: Good morning, Mr. Chen. You have a standard room for two nights, checking out on Friday? Man: That's correct. Is it possible to get a room on a higher floor? I prefer the view. Woman: Of course. I'll upgrade you to a room on the fifteenth floor at no additional charge. Here's your key card. Man: That's wonderful. Thank you very much.",
+   text:"What does the man request?",
+   options:["A room with a better view","A late checkout time","An additional key card","A suite upgrade"],
+   answer:0,explanation:"男士說 I prefer the view，要求高樓層房間以獲得更好的視野。"},
+
+  {id:113,part:3,type:'listening',groupId:'c1',
+   audio:"Man: Good morning. I'd like to check in. My name is David Chen. Woman: Good morning, Mr. Chen. You have a standard room for two nights, checking out on Friday? Man: That's correct. Is it possible to get a room on a higher floor? I prefer the view. Woman: Of course. I'll upgrade you to a room on the fifteenth floor at no additional charge. Here's your key card. Man: That's wonderful. Thank you very much.",
+   text:"What does the woman offer at no additional charge?",
+   options:["A free breakfast","A room on the 15th floor","A late checkout","A complimentary upgrade to a suite"],
+   answer:1,explanation:"女士說 I'll upgrade you to a room on the fifteenth floor at no additional charge。"},
+
+  {id:114,part:3,type:'listening',groupId:'c2',
+   audio:"Woman: Hi James, did you get a chance to look at the proposal I sent you yesterday? Man: Yes, I reviewed it this morning. Overall it looks good, but I think we need to adjust the budget for the marketing section. Woman: I agree. I was thinking we could reallocate some funds from the travel budget. Man: That makes sense. Can you revise it and send me the updated version by Thursday? Woman: Sure, I'll have it ready by Wednesday afternoon.",
+   text:"What are the speakers mainly discussing?",
+   options:["A travel plan","A business proposal","A new marketing campaign","An annual budget report"],
+   answer:1,explanation:"對話主軸是審閱提案（proposal）並討論修改，故選 B。"},
+
+  {id:115,part:3,type:'listening',groupId:'c2',
+   audio:"Woman: Hi James, did you get a chance to look at the proposal I sent you yesterday? Man: Yes, I reviewed it this morning. Overall it looks good, but I think we need to adjust the budget for the marketing section. Woman: I agree. I was thinking we could reallocate some funds from the travel budget. Man: That makes sense. Can you revise it and send me the updated version by Thursday? Woman: Sure, I'll have it ready by Wednesday afternoon.",
+   text:"What does the man suggest changing in the proposal?",
+   options:["The project timeline","The marketing budget","The travel arrangements","The format of the document"],
+   answer:1,explanation:"男士說 we need to adjust the budget for the marketing section。"},
+
+  {id:116,part:3,type:'listening',groupId:'c2',
+   audio:"Woman: Hi James, did you get a chance to look at the proposal I sent you yesterday? Man: Yes, I reviewed it this morning. Overall it looks good, but I think we need to adjust the budget for the marketing section. Woman: I agree. I was thinking we could reallocate some funds from the travel budget. Man: That makes sense. Can you revise it and send me the updated version by Thursday? Woman: Sure, I'll have it ready by Wednesday afternoon.",
+   text:"By when will the woman send the revised proposal?",
+   options:["Tuesday morning","Wednesday afternoon","Thursday morning","Friday afternoon"],
+   answer:1,explanation:"女士說 I'll have it ready by Wednesday afternoon。"},
+
+  // PART 4 — Short Talks (4 題 = 2 獨白 × 2 題)
+  {id:117,part:4,type:'listening',groupId:'t1',
+   audio:"Attention all passengers. This is an announcement regarding Flight KA 205 to Hong Kong. Due to a technical issue with the aircraft, the departure has been delayed by approximately one hour. The new departure time is four thirty P.M. Passengers are asked to remain in the boarding area and listen for further announcements. We apologize for the inconvenience and thank you for your patience.",
+   text:"Why is the flight delayed?",
+   options:["Bad weather conditions","A technical problem with the aircraft","Air traffic control issues","A late arriving crew"],
+   answer:1,explanation:"廣播說 due to a technical issue with the aircraft，即飛機技術問題。"},
+
+  {id:118,part:4,type:'listening',groupId:'t1',
+   audio:"Attention all passengers. This is an announcement regarding Flight KA 205 to Hong Kong. Due to a technical issue with the aircraft, the departure has been delayed by approximately one hour. The new departure time is four thirty P.M. Passengers are asked to remain in the boarding area and listen for further announcements. We apologize for the inconvenience and thank you for your patience.",
+   text:"What are passengers asked to do?",
+   options:["Proceed to a different gate","Contact airline staff immediately","Stay in the boarding area","Check in again at the counter"],
+   answer:2,explanation:"廣播要求乘客 remain in the boarding area（留在登機區）。"},
+
+  {id:119,part:4,type:'listening',groupId:'t2',
+   audio:"Good morning everyone, and welcome to this month's all-hands meeting. I'm pleased to announce that our company has achieved record sales figures for the third quarter. Revenue increased by twenty-three percent compared to the same period last year. This success is due to the hard work and dedication of every team member. As a token of appreciation, all employees will receive a performance bonus this month. Details will be sent to your email by the end of the week.",
+   text:"What is the main purpose of this talk?",
+   options:["To introduce a new company policy","To share quarterly sales results and announce a bonus","To welcome new employees","To announce a company restructuring"],
+   answer:1,explanation:"說話者分享了第三季銷售成果（23% 增長）並宣布績效獎金。"},
+
+  {id:120,part:4,type:'listening',groupId:'t2',
+   audio:"Good morning everyone, and welcome to this month's all-hands meeting. I'm pleased to announce that our company has achieved record sales figures for the third quarter. Revenue increased by twenty-three percent compared to the same period last year. This success is due to the hard work and dedication of every team member. As a token of appreciation, all employees will receive a performance bonus this month. Details will be sent to your email by the end of the week.",
+   text:"How will employees receive details about the bonus?",
+   options:["At the next all-hands meeting","Through a department memo","Via email by the end of the week","Posted on the company notice board"],
+   answer:2,explanation:"說話者說 Details will be sent to your email by the end of the week。"}
 ];
 
-let state = { currentQ:0, answers:{}, reviewed:false, timerInterval:null, secondsLeft:25*60, questions:[], examDone:false };
+// ── STATE & HELPERS ──────────────────────────────────────────────────────────
+let state={currentQ:0,answers:{},reviewed:false,timerInterval:null,secondsLeft:30*60,questions:[],examDone:false};
+let currentUtterance=null;
 
-function loadHistory() { try { return JSON.parse(localStorage.getItem('toeic_history')||'[]'); } catch { return []; } }
-function saveHistory(h) { localStorage.setItem('toeic_history', JSON.stringify(h)); }
-function todayStr() { return new Date().toISOString().slice(0,10); }
-function todayDone() { return loadHistory().some(r=>r.date===todayStr()); }
+function loadHistory(){try{return JSON.parse(localStorage.getItem('toeic_history')||'[]');}catch{return[];}}
+function saveHistory(h){localStorage.setItem('toeic_history',JSON.stringify(h));}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function todayDone(){return loadHistory().some(r=>r.date===todayStr());}
 
-function init() {
-  updateDashboard(); renderHistory();
-  if (window.matchMedia('(pointer: coarse)').matches) {
-    const tip = document.getElementById('shortcut-tip');
-    if (tip) tip.textContent = '左右滑動可切換題目';
+function init(){
+  updateDashboard();renderHistory();
+  if(window.matchMedia('(pointer: coarse)').matches){
+    const tip=document.getElementById('shortcut-tip');
+    if(tip) tip.textContent='左右滑動可切換題目';
   }
 }
 
-function updateDashboard() {
-  const history = loadHistory();
-  const totalQ = history.reduce((s,r)=>s+r.total,0);
-  const totalCorrect = history.reduce((s,r)=>s+r.correct,0);
-  const acc = totalQ>0 ? Math.round(totalCorrect/totalQ*100) : 0;
-  const streak = calcStreak(history);
-  document.getElementById('stat-total').textContent = totalQ;
-  document.getElementById('stat-accuracy').textContent = acc+'%';
-  document.getElementById('stat-days').textContent = history.length;
-  document.getElementById('stat-streak').textContent = streak;
-  document.getElementById('streak-display').textContent = '🔥 '+streak+' 天';
-  const statusDiv = document.getElementById('today-status');
-  const btn = document.getElementById('start-btn');
-  if (todayDone()) {
-    const today = history.find(r=>r.date===todayStr());
-    statusDiv.innerHTML = `<p style="margin-bottom:12px">今日已完成 <span class="completed-badge">✓ ${today.correct}/${today.total} 正確</span></p>`;
-    btn.textContent = '🔄 再練一次';
-    btn.disabled = false;
-  } else { statusDiv.innerHTML=''; btn.textContent='▶ 開始今日練習'; btn.disabled=false; }
+function updateDashboard(){
+  const history=loadHistory();
+  const totalQ=history.reduce((s,r)=>s+r.total,0);
+  const totalCorrect=history.reduce((s,r)=>s+r.correct,0);
+  const acc=totalQ>0?Math.round(totalCorrect/totalQ*100):0;
+  const streak=calcStreak(history);
+  document.getElementById('stat-total').textContent=totalQ;
+  document.getElementById('stat-accuracy').textContent=acc+'%';
+  document.getElementById('stat-days').textContent=history.length;
+  document.getElementById('stat-streak').textContent=streak;
+  document.getElementById('streak-display').textContent='🔥 '+streak+' 天';
+  const statusDiv=document.getElementById('today-status');
+  const btn=document.getElementById('start-btn');
+  if(todayDone()){
+    const today=history.find(r=>r.date===todayStr());
+    statusDiv.innerHTML=`<p style="margin-bottom:12px">今日已完成 <span class="completed-badge">✓ ${today.correct}/${today.total} 正確</span></p>`;
+    btn.textContent='🔄 再練一次';
+  }else{
+    statusDiv.innerHTML='';
+    btn.textContent='▶ 開始今日練習';
+  }
 }
 
-function calcStreak(history) {
-  if (!history.length) return 0;
-  const dates = [...new Set(history.map(r=>r.date))].sort().reverse();
-  let streak = 0;
-  const today = new Date(todayStr());
-  for (let i=0;i<dates.length;i++) {
-    const diff = Math.round((today-new Date(dates[i]))/86400000);
-    if (diff===i||(i===0&&diff===0)) streak++; else break;
+function calcStreak(history){
+  if(!history.length) return 0;
+  const dates=[...new Set(history.map(r=>r.date))].sort().reverse();
+  let streak=0;
+  const today=new Date(todayStr());
+  for(let i=0;i<dates.length;i++){
+    const diff=Math.round((today-new Date(dates[i]))/86400000);
+    if(diff===i||(i===0&&diff===0)) streak++; else break;
   }
   return streak;
 }
 
-function buildQuestionSet() {
-  const history = loadHistory();
-  const seed = history.length;
-  let pool = seed%2===1 ? [...QUESTION_BANK.slice(5),...EXTRA_QUESTIONS,...QUESTION_BANK.slice(0,5)] : [...QUESTION_BANK];
-  return pool.slice(0,20);
+function buildQuestionSet(){
+  const history=loadHistory();
+  const day=history.length;
+  // shuffle with day as seed offset
+  const listening=shuffleWithSeed([...LISTENING_BANK],day).slice(0,10);
+  const reading=shuffleWithSeed([...READING_BANK],day+100).slice(0,10);
+  return [...listening,...reading];
 }
 
-function startExam() {
-  state = { currentQ:0, answers:{}, reviewed:false, timerInterval:null, secondsLeft:25*60, questions:buildQuestionSet(), examDone:false };
-  showPage('exam'); renderQuestion(); startTimer();
-  if (!window.matchMedia('(pointer: coarse)').matches) showShortcutHint();
+function shuffleWithSeed(arr,seed){
+  let s=seed%1000;
+  return arr.sort(()=>{s=(s*9301+49297)%233280;return s/233280-.5;});
 }
 
-function startTimer() {
+// ── EXAM ─────────────────────────────────────────────────────────────────────
+function startExam(){
+  stopSpeech();
+  state={currentQ:0,answers:{},reviewed:false,timerInterval:null,secondsLeft:30*60,questions:buildQuestionSet(),examDone:false};
+  showPage('exam');renderQuestion();startTimer();
+  if(!window.matchMedia('(pointer: coarse)').matches) showShortcutHint();
+}
+
+function startTimer(){
   clearInterval(state.timerInterval);
   updateTimerDisplay();
-  state.timerInterval = setInterval(()=>{
+  state.timerInterval=setInterval(()=>{
     state.secondsLeft--;
     updateTimerDisplay();
-    if (state.secondsLeft<=0) { clearInterval(state.timerInterval); finishExam(); }
+    if(state.secondsLeft<=0){clearInterval(state.timerInterval);finishExam();}
   },1000);
 }
 
-function updateTimerDisplay() {
-  const m=Math.floor(state.secondsLeft/60), s=state.secondsLeft%60;
+function updateTimerDisplay(){
+  const m=Math.floor(state.secondsLeft/60),s=state.secondsLeft%60;
   const el=document.getElementById('timer');
   el.textContent=`${m}:${String(s).padStart(2,'0')}`;
   el.classList.toggle('danger',state.secondsLeft<120);
 }
 
-function renderQuestion() {
-  const q=state.questions[state.currentQ], total=state.questions.length;
+// ── RENDER QUESTION ───────────────────────────────────────────────────────────
+function renderQuestion(){
+  stopSpeech();
+  const q=state.questions[state.currentQ],total=state.questions.length;
   document.getElementById('q-counter').textContent=`${state.currentQ+1} / ${total}`;
   document.getElementById('progress-fill').style.width=`${((state.currentQ+1)/total)*100}%`;
-  const partNames={5:'Part 5 — 句子填空',6:'Part 6 — 段落填空',7:'Part 7 — 閱讀理解'};
-  document.getElementById('part-label').textContent=partNames[q.part]||'';
-  document.getElementById('question-text').innerHTML=q.text.replace('-------','<span class="blank">_______</span>');
-  const pa=document.getElementById('passage-area');
-  pa.innerHTML=q.passage?`<div class="passage">${q.passage.replace(/</g,'&lt;')}</div>`:'';
+
+  const partNames={1:'Part 1 — 照片描述',2:'Part 2 — 應答問題',3:'Part 3 — 簡短對話',4:'Part 4 — 簡短獨白',5:'Part 5 — 句子填空',6:'Part 6 — 段落填空',7:'Part 7 — 閱讀理解'};
+  const lbl=document.getElementById('part-label');
+  lbl.textContent=partNames[q.part]||'';
+  lbl.className='part-label '+(q.type==='listening'?'listening':'reading');
+
+  if(q.type==='listening'){
+    renderListeningQuestion(q);
+  } else {
+    renderReadingQuestion(q);
+  }
+
   const letters=['A','B','C','D'];
-  document.getElementById('options-area').innerHTML=q.options.map((opt,i)=>{
+  const options=document.getElementById('options-area');
+  options.innerHTML=q.options.map((opt,i)=>{
     let cls='option-btn';
     const saved=state.answers[state.currentQ];
-    if(state.reviewed){ if(i===q.answer) cls+=' correct'; else if(saved===i&&i!==q.answer) cls+=' wrong'; }
+    if(state.reviewed){if(i===q.answer) cls+=' correct';else if(saved===i&&i!==q.answer) cls+=' wrong';}
     else if(saved===i) cls+=' selected';
     return `<button class="${cls}" onclick="selectOption(${i})" ${state.reviewed?'disabled':''}><span class="letter">${letters[i]}</span>${opt}</button>`;
   }).join('');
+
   const expEl=document.getElementById('explanation');
-  if(state.reviewed&&q.explanation){ expEl.innerHTML=`<strong>解析：</strong>${q.explanation}`; expEl.classList.add('show'); }
+  if(state.reviewed&&q.explanation){expEl.innerHTML=`<strong>解析：</strong>${q.explanation}`;expEl.classList.add('show');}
   else expEl.classList.remove('show');
+
   document.getElementById('prev-btn').disabled=state.currentQ===0;
   const nb=document.getElementById('next-btn');
-  if(state.currentQ===total-1){ nb.textContent=state.reviewed?'完成檢視':'提交答案'; nb.className='btn btn-success'; }
-  else { nb.textContent='確認並繼續 →'; nb.className='btn btn-primary'; }
+  if(state.currentQ===total-1){nb.textContent=state.reviewed?'完成檢視':'提交答案';nb.className='btn btn-success';}
+  else{nb.textContent='確認並繼續 →';nb.className='btn btn-primary';}
+
+  // Auto-play listening when not reviewed
+  if(q.type==='listening'&&!state.reviewed) setTimeout(()=>playAudio(q),400);
 }
 
-function selectOption(i) { if(state.reviewed) return; state.answers[state.currentQ]=i; renderQuestion(); }
-
-function nextQ() {
-  if(state.reviewed){ if(state.currentQ<state.questions.length-1){state.currentQ++;renderQuestion();}else closeModal(); return; }
-  if(state.currentQ<state.questions.length-1){ state.currentQ++; renderQuestion(); } else finishExam();
+function renderListeningQuestion(q){
+  document.getElementById('listening-area').innerHTML=`
+    ${q.scene?`<div class="scene-box">${q.scene}</div>`:''}
+    <div class="audio-panel">
+      <div class="audio-label">${q.part===1?'🔊 聆聽四個敘述，選出最符合的答案':q.part===2?'🔊 聆聽問句，選出最佳回應':q.part===3?'🔊 聆聽對話，回答問題':'🔊 聆聽獨白，回答問題'}</div>
+      <div class="wave-bars paused" id="wave-bars"><span style="height:8px"></span><span style="height:14px"></span><span style="height:20px"></span><span style="height:14px"></span><span style="height:8px"></span></div>
+      <button class="play-btn" id="play-btn" onclick="playAudio(state.questions[state.currentQ])">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        播放題目
+      </button>
+      <div class="audio-note">可重複點擊播放 · 語音為英文合成音</div>
+    </div>`;
+  document.getElementById('passage-area').innerHTML='';
+  document.getElementById('question-text').textContent=q.text;
 }
-function prevQ() { if(state.currentQ>0){state.currentQ--;renderQuestion();} }
 
-function finishExam() {
-  clearInterval(state.timerInterval); state.examDone=true;
+function renderReadingQuestion(q){
+  document.getElementById('listening-area').innerHTML='';
+  document.getElementById('question-text').innerHTML=q.text.replace('-------','<span class="blank">_______</span>');
+  const pa=document.getElementById('passage-area');
+  pa.innerHTML=q.passage?`<div class="passage">${q.passage.replace(/</g,'&lt;')}</div>`:'';
+}
+
+// ── TTS ───────────────────────────────────────────────────────────────────────
+function playAudio(q){
+  stopSpeech();
+  const btn=document.getElementById('play-btn');
+  const wave=document.getElementById('wave-bars');
+  if(!btn||!wave) return;
+
+  const text=q.audio;
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang='en-US';
+  utter.rate=0.85;
+  utter.pitch=1;
+
+  // Try to pick a clear English voice
+  const voices=speechSynthesis.getVoices();
+  const enVoice=voices.find(v=>v.lang==='en-US'&&v.name.includes('Google'))||
+                 voices.find(v=>v.lang==='en-US')||
+                 voices.find(v=>v.lang.startsWith('en'));
+  if(enVoice) utter.voice=enVoice;
+
+  utter.onstart=()=>{
+    if(btn){btn.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 播放中...';btn.classList.add('playing');}
+    if(wave) wave.classList.remove('paused');
+  };
+  utter.onend=utter.onerror=()=>{
+    if(btn){btn.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> 重播';btn.classList.remove('playing');}
+    if(wave) wave.classList.add('paused');
+  };
+
+  currentUtterance=utter;
+  speechSynthesis.speak(utter);
+}
+
+function stopSpeech(){
+  if(speechSynthesis.speaking) speechSynthesis.cancel();
+  currentUtterance=null;
+}
+
+// ── ANSWER & NAVIGATION ────────────────────────────────────────────────────────
+function selectOption(i){
+  if(state.reviewed) return;
+  state.answers[state.currentQ]=i;
+  renderQuestion();
+}
+
+function nextQ(){
+  if(state.reviewed){
+    if(state.currentQ<state.questions.length-1){state.currentQ++;renderQuestion();}else closeModal();
+    return;
+  }
+  if(state.currentQ<state.questions.length-1){state.currentQ++;renderQuestion();}else finishExam();
+}
+function prevQ(){if(state.currentQ>0){state.currentQ--;renderQuestion();}}
+
+function finishExam(){
+  stopSpeech();
+  clearInterval(state.timerInterval);state.examDone=true;
   let correct=0;
-  state.questions.forEach((q,i)=>{ if(state.answers[i]===q.answer) correct++; });
-  const total=state.questions.length, pct=Math.round(correct/total*100);
+  state.questions.forEach((q,i)=>{if(state.answers[i]===q.answer) correct++;});
+  const total=state.questions.length,pct=Math.round(correct/total*100);
   const history=loadHistory();
   const existing=history.findIndex(r=>r.date===todayStr());
   const record={date:todayStr(),correct,total,pct,answers:{...state.answers},time:new Date().toISOString()};
-  if(existing>=0) history[existing]=record; else history.push(record);
-  saveHistory(history); updateDashboard();
+  if(existing>=0) history[existing]=record;else history.push(record);
+  saveHistory(history);updateDashboard();
+
   const color=pct>=80?'#0e9f6e':pct>=60?'#ff8c00':'#f05252';
   document.getElementById('modal-score-circle').innerHTML=`<div class="score-circle" style="background:${color}15;border:4px solid ${color};color:${color}"><div class="pct">${pct}%</div><div class="sub">${correct}/${total} 正確</div></div>`;
-  const elapsed=25*60-state.secondsLeft, mm=Math.floor(elapsed/60), ss=elapsed%60;
+  const elapsed=30*60-state.secondsLeft,mm=Math.floor(elapsed/60),ss=elapsed%60;
   document.getElementById('modal-stats').innerHTML=`
     <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:var(--primary)">${correct}</div><div style="font-size:.8rem;color:var(--muted)">答對題數</div></div>
     <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:var(--danger)">${total-correct}</div><div style="font-size:.8rem;color:var(--muted)">答錯題數</div></div>
@@ -452,85 +656,74 @@ function finishExam() {
     <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:${color}">${pct>=80?'優秀':pct>=60?'良好':'待加強'}</div><div style="font-size:.8rem;color:var(--muted)">評級</div></div>`;
   const letters=['A','B','C','D'];
   document.getElementById('modal-breakdown').innerHTML=state.questions.map((q,i)=>{
-    const a=state.answers[i], ok=a===q.answer, skip=a===undefined;
-    return `<div class="result-row"><span class="q-num">Q${i+1}</span><span class="q-text">${q.text.replace('-------','_____').substring(0,50)}…</span><span class="badge ${skip?'skip':ok?'ok':'fail'}">${skip?'未答':ok?'✓ '+letters[q.answer]:'✗ '+letters[q.answer]}</span></div>`;
+    const a=state.answers[i],ok=a===q.answer,skip=a===undefined;
+    const icon=q.type==='listening'?'🎧':'📖';
+    return `<div class="result-row"><span class="q-num">${icon}Q${i+1}</span><span class="q-text">${q.text.substring(0,45)}…</span><span class="badge ${skip?'skip':ok?'ok':'fail'}">${skip?'未答':ok?'✓ '+letters[q.answer]:'✗ '+letters[q.answer]}</span></div>`;
   }).join('');
   document.getElementById('result-modal').classList.add('open');
 }
 
-function reviewExam() { state.reviewed=true; state.currentQ=0; document.getElementById('result-modal').classList.remove('open'); renderQuestion(); }
-function closeModal() { document.getElementById('result-modal').classList.remove('open'); showPage('dashboard'); updateDashboard(); renderHistory(); }
+function reviewExam(){state.reviewed=true;state.currentQ=0;document.getElementById('result-modal').classList.remove('open');renderQuestion();}
+function closeModal(){stopSpeech();document.getElementById('result-modal').classList.remove('open');showPage('dashboard');updateDashboard();renderHistory();}
 
-function renderHistory() {
+// ── HISTORY ───────────────────────────────────────────────────────────────────
+function renderHistory(){
   const history=loadHistory().slice().reverse();
   const el=document.getElementById('history-list');
-  if(!history.length){ el.innerHTML='<div class="empty-state">📭 尚無練習記錄<br><small>完成第一次練習後會顯示在這裡</small></div>'; return; }
+  if(!history.length){el.innerHTML='<div class="empty-state">📭 尚無練習記錄<br><small>完成第一次練習後會顯示在這裡</small></div>';return;}
   el.innerHTML=history.map(r=>{
     const color=r.pct>=80?'#0e9f6e':r.pct>=60?'#ff8c00':'#f05252';
     return `<div class="history-item"><span class="history-date">${r.date}</span><div class="history-bar"><div class="history-fill" style="width:${r.pct}%;background:${color}"></div></div><span class="history-score" style="color:${color}">${r.correct}/${r.total}</span></div>`;
   }).join('');
 }
 
-function showPage(name) {
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showPage(name){
+  stopSpeech();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   const idx={dashboard:0,exam:1,history:2}[name];
   document.querySelectorAll('.tab-btn')[idx]?.classList.add('active');
-  ['dashboard','exam','history'].forEach(n=>{ const el=document.getElementById('bnav-'+n); if(el) el.classList.toggle('active',n===name); });
+  ['dashboard','exam','history'].forEach(n=>{const el=document.getElementById('bnav-'+n);if(el) el.classList.toggle('active',n===name);});
   if(name==='history') renderHistory();
-  if(name==='dashboard'){ clearInterval(state.timerInterval); updateDashboard(); }
+  if(name==='dashboard'){clearInterval(state.timerInterval);updateDashboard();}
 }
 
+// ── KEYBOARD ──────────────────────────────────────────────────────────────────
 document.addEventListener('keydown',(e)=>{
   const page=document.querySelector('.page.active');
   if(!page||page.id!=='page-exam') return;
-  if(state.reviewed){ if(e.key==='ArrowRight'||e.key==='Enter') nextQ(); return; }
+  if(state.reviewed){if(e.key==='ArrowRight'||e.key==='Enter') nextQ();return;}
   const map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
   const key=e.key.toLowerCase();
   if(key in map) selectOption(map[key]);
   if(e.key==='Enter'||e.key==='ArrowRight') nextQ();
   if(e.key==='ArrowLeft') prevQ();
+  if(e.key===' '){ e.preventDefault(); const q=state.questions[state.currentQ]; if(q&&q.type==='listening') playAudio(q); }
 });
 
-function showShortcutHint() {
+function showShortcutHint(){
   const hint=document.getElementById('shortcut-hint');
   hint.classList.add('show');
   setTimeout(()=>hint.classList.remove('show'),3000);
 }
 
+// ── SWIPE ─────────────────────────────────────────────────────────────────────
 (function(){
-  let startX=0,startY=0;
-  document.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY;},{passive:true});
+  let sx=0,sy=0;
+  document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
   document.addEventListener('touchend',e=>{
     const page=document.querySelector('.page.active');
     if(!page||page.id!=='page-exam') return;
-    const dx=e.changedTouches[0].clientX-startX, dy=e.changedTouches[0].clientY-startY;
+    const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
     if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*0.8) return;
-    if(dx<0) nextQ(); else prevQ();
+    if(dx<0) nextQ();else prevQ();
   },{passive:true});
 })();
 
-let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault(); deferredPrompt=e;
-  if(!localStorage.getItem('a2hs_dismissed')) document.getElementById('a2hs-banner').style.display='flex';
-});
-document.getElementById('a2hs-banner').addEventListener('click',async(e)=>{
-  if(e.target.closest('.a2hs-close')) return;
-  if(deferredPrompt){ deferredPrompt.prompt(); const{outcome}=await deferredPrompt.userChoice; if(outcome==='accepted') dismissA2HS(); deferredPrompt=null; }
-});
-function dismissA2HS(){ localStorage.setItem('a2hs_dismissed','1'); document.getElementById('a2hs-banner').style.display='none'; }
-
-(function(){
-  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isInStandalone=window.navigator.standalone;
-  if(isIOS&&!isInStandalone&&!localStorage.getItem('a2hs_dismissed')){
-    const banner=document.getElementById('a2hs-banner');
-    banner.style.display='flex';
-    banner.querySelector('small').textContent='點「分享」→「加入主畫面」即可';
-  }
-})();
+// Load voices early for iOS
+if(speechSynthesis.onvoiceschanged!==undefined) speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
 
 init();
 </script>
