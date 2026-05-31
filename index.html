@@ -151,13 +151,13 @@
   </div>
   <div class="card">
     <h2 style="margin-bottom:8px">今日練習</h2>
-    <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">每日 45 題 · 從 500 題題庫隨機抽取 · 聽力＋閱讀含中文解析</p>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">每日 20 題 · 從 500 題題庫隨機抽取 · 聽力＋閱讀混合 · 含中文解析</p>
     <div id="today-status"></div>
     <button class="start-btn" id="start-btn" onclick="startExam()">▶ 開始今日練習</button>
     <p style="font-size:.8rem;color:var(--muted);margin-top:10px;text-align:center" id="shortcut-tip">快捷鍵：A/B/C/D 選答 · Space 重播音訊 · Enter / → 下一題</p>
   </div>
   <div class="card">
-    <h3 style="margin-bottom:12px">題庫總覽 <span style="color:var(--primary);font-weight:700">500 題</span>，每日隨機抽 <span style="color:var(--success);font-weight:700">45 題</span></h3>
+    <h3 style="margin-bottom:12px">題庫總覽 <span style="color:var(--primary);font-weight:700">500 題</span>，每日隨機抽 <span style="color:var(--success);font-weight:700">20 題</span></h3>
     <div style="margin-bottom:8px;font-size:.8rem;font-weight:600;color:#7c3aed">🎧 聽力 Listening — 300 題</div>
     <div style="display:grid;gap:5px;margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:.9rem"><span>Part 1 — 照片描述</span><span style="color:#7c3aed;font-weight:600">50 題</span></div>
@@ -178,9 +178,9 @@
 <div class="page" id="page-exam">
   <div class="card" style="padding:16px">
     <div class="exam-header">
-      <div class="q-counter" id="q-counter">1 / 45</div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:2%"></div></div>
-      <div class="timer" id="timer">40:00</div>
+      <div class="q-counter" id="q-counter">1 / 20</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:5%"></div></div>
+      <div class="timer" id="timer">25:00</div>
     </div>
   </div>
   <div class="card" id="question-card">
@@ -235,7 +235,7 @@ function seededShuffle(arr,seed){
   return a;
 }
 
-// ── BUILD DAILY SET (45 questions) ────────────────────────────────────────────
+// ── BUILD DAILY SET (20 questions, mixed order) ───────────────────────────────
 function buildQuestionSet(){
   const qs = window.TOEIC_QUESTIONS || [];
   const history = loadHistory();
@@ -244,56 +244,47 @@ function buildQuestionSet(){
   const byPart = {};
   for(let p=1;p<=7;p++) byPart[p]=qs.filter(q=>q.part===p);
 
-  // Part 1: 5 random individual questions
-  const p1 = seededShuffle(byPart[1],seed).slice(0,5);
+  // 🎧 Listening: 6 questions total
+  // Part 1: 1 photo description
+  const p1 = seededShuffle(byPart[1], seed).slice(0,1);
 
-  // Part 2: 10 random individual questions
-  const p2 = seededShuffle(byPart[2],seed+1).slice(0,10);
+  // Part 2: 2 question-response
+  const p2 = seededShuffle(byPart[2], seed+1).slice(0,2);
 
-  // Part 3: pick 3 random conversations (groupId), include all 3 Qs each = 9 Qs
+  // Part 3: 1 conversation = 3 questions
   const p3groups = [...new Set(byPart[3].map(q=>q.groupId))];
-  const p3picked = seededShuffle(p3groups,seed+2).slice(0,3);
-  const p3 = p3picked.flatMap(gid=>byPart[3].filter(q=>q.groupId===gid));
+  const p3gid = seededShuffle(p3groups, seed+2)[0];
+  const p3 = byPart[3].filter(q=>q.groupId===p3gid);
 
-  // Part 4: pick 3 random talks, include all 2 Qs each = 6 Qs
-  const p4groups = [...new Set(byPart[4].map(q=>q.groupId))];
-  const p4picked = seededShuffle(p4groups,seed+3).slice(0,3);
-  const p4 = p4picked.flatMap(gid=>byPart[4].filter(q=>q.groupId===gid));
+  // 📖 Reading: 14 questions total
+  // Part 5: 10 fill-in-the-blank
+  const p5 = seededShuffle(byPart[5], seed+3).slice(0,10);
 
-  // Part 5: 12 random individual questions
-  const p5 = seededShuffle(byPart[5],seed+4).slice(0,12);
+  // Part 6: 2 random text-completion
+  const p6 = seededShuffle(byPart[6], seed+4).slice(0,2);
 
-  // Part 6: pick 1 passage (4 Qs consecutive)
-  const p6sorted = byPart[6].sort((a,b)=>a.id-b.id);
-  const p6passages=[];
-  for(let i=0;i<p6sorted.length;i+=4) p6passages.push(p6sorted.slice(i,i+4));
-  const p6 = seededShuffle(p6passages,seed+5)[0]||[];
+  // Part 7: 2 random reading comprehension
+  const p7 = seededShuffle(byPart[7], seed+5).slice(0,2);
 
-  // Part 7: pick 1 passage (4 Qs) — total so far: 5+10+9+6+12+4 = 46 → use 3 from P7 passage
-  const p7sorted = byPart[7].sort((a,b)=>a.id-b.id);
-  const p7passages=[];
-  for(let i=0;i<p7sorted.length;i+=4) p7passages.push(p7sorted.slice(i,i+4));
-  // pick the passage, take only 3 Qs to hit total of 45 (5+10+9+6+12+4+3=49... let me fix)
+  // Interleave: spread listening throughout the 20 questions
+  // Order: L L R R R L L L R R R R R R R R R R R R
+  // [p1(1), p2(1), p5(3), p2(1), p3(3), p5(3), p6(2), p7(2), p5(4)]
+  const reading = [...p5, ...p6, ...p7]; // 14 reading
+  const listening = [...p1, ...p2, ...p3]; // 6 listening
 
-  // Recount: 5+10+9+6+12+4 = 46 — adjust to hit 45
-  // Use P5=11, rest same: 5+10+9+6+11+4 = 45 ✓ but drop P7
-  // Or: P1=5, P2=8, P3=9, P4=6, P5=12, P6=4, P7=1 = 45 (P7 single Qs)
-  // Simplest: P1=5,P2=10,P3=9,P4=6,P5=10,P6=4,P7=1 = 45
-  // Let's do: P1=4,P2=8,P3=9,P4=6,P5=12,P6=4,P7=2 = 45
+  // Interleave: every ~3 reading questions, insert 1-2 listening
+  const mixed = [];
+  let li=0, ri=0;
+  const pattern = [0,0,1,0,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,0]; // 0=reading,1=listening
+  for(const slot of pattern){
+    if(slot===1 && li<listening.length) mixed.push(listening[li++]);
+    else if(ri<reading.length) mixed.push(reading[ri++]);
+  }
+  // append any leftovers
+  while(li<listening.length) mixed.push(listening[li++]);
+  while(ri<reading.length) mixed.push(reading[ri++]);
 
-  const p5b = seededShuffle(byPart[5],seed+4).slice(0,12);
-  const p7single = seededShuffle(byPart[7],seed+6).slice(0,2);
-
-  // Final: P1(4)+P2(8)+P3(9)+P4(6)+P5(12)+P6(4)+P7(2) = 45
-  const p1b = seededShuffle(byPart[1],seed).slice(0,4);
-  const p2b = seededShuffle(byPart[2],seed+1).slice(0,8);
-  const p3gb = seededShuffle(p3groups,seed+2).slice(0,3);
-  const p3b = p3gb.flatMap(gid=>byPart[3].filter(q=>q.groupId===gid));
-  const p4gb = seededShuffle(p4groups,seed+3).slice(0,3);
-  const p4b = p4gb.flatMap(gid=>byPart[4].filter(q=>q.groupId===gid));
-  const p6b = seededShuffle(p6passages,seed+5)[0]||[];
-
-  return [...p1b,...p2b,...p3b,...p4b,...p5b,...p6b,...p7single];
+  return mixed.slice(0,20);
 }
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -345,7 +336,7 @@ function calcStreak(history){
 // ── EXAM ──────────────────────────────────────────────────────────────────────
 function startExam(){
   stopSpeech();
-  state={currentQ:0,answers:{},reviewed:false,timerInterval:null,secondsLeft:40*60,questions:buildQuestionSet(),examDone:false};
+  state={currentQ:0,answers:{},reviewed:false,timerInterval:null,secondsLeft:25*60,questions:buildQuestionSet(),examDone:false};
   showPage('exam');renderQuestion();startTimer();
   if(!window.matchMedia('(pointer: coarse)').matches) showShortcutHint();
 }
@@ -471,7 +462,7 @@ function finishExam(){
   saveHistory(history);updateDashboard();
   const color=pct>=80?'#0e9f6e':pct>=60?'#ff8c00':'#f05252';
   document.getElementById('modal-score-circle').innerHTML=`<div class="score-circle" style="background:${color}15;border:4px solid ${color};color:${color}"><div class="pct">${pct}%</div><div class="sub">${correct}/${total} 正確</div></div>`;
-  const elapsed=40*60-state.secondsLeft,mm=Math.floor(elapsed/60),ss=elapsed%60;
+  const elapsed=25*60-state.secondsLeft,mm=Math.floor(elapsed/60),ss=elapsed%60;
   document.getElementById('modal-stats').innerHTML=`
     <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:var(--primary)">${correct}</div><div style="font-size:.75rem;color:var(--muted)">答對</div></div>
     <div style="padding:10px;background:#f9fafb;border-radius:8px"><div style="font-size:1.3rem;font-weight:700;color:var(--danger)">${total-correct}</div><div style="font-size:.75rem;color:var(--muted)">答錯</div></div>
